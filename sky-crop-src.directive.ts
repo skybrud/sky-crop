@@ -38,6 +38,9 @@
 					element.prop('src', url);
 				} else {
 					element[0].style.backgroundImage = 'url('+url+')';
+					
+					var anchor = skyCrop.anchorFromSrc(url);
+					element[0].style.backgroundPosition = anchor.x + ' ' + anchor.y;
 				}				
 			}
 			

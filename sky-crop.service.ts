@@ -8,6 +8,7 @@ declare module sky {
 	interface ISkyCropService {
 		getUrl(image: string, imageSize: ISkyCropWidthHeightObj, masterSize: ISkyCropWidthHeightObj, mode?: string, round?: number): string;
 		infoFromSrc(src: string): ISkyCropWidthHeightObj;
+		anchorFromSrc(src: string): any;
 	}
 }
 
@@ -67,6 +68,26 @@ declare module sky {
 			}
 			return params;
 		};
+
+		_this.anchorFromSrc = function(src) {
+			var info = _this.infoFromSrc(src);
+
+			var anchor = {
+				x: '50%',
+				y: '50%'
+			};
+
+			if (info.hasOwnProperty('center')) {
+				var centerNumbers = info.center.match(/\d*\.\d*/g);
+
+				if (centerNumbers && centerNumbers.length == 2) {
+					anchor.y = (parseFloat(centerNumbers[0]) * 100) + '%';
+					anchor.x = (parseFloat(centerNumbers[1]) * 100) + '%';
+				}
+			}
+
+			return anchor;
+		}
 
 		function roundTo(value, round) {
 			return Math.ceil(value / round) * round;
