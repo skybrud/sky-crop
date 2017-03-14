@@ -1,0 +1,14 @@
+<div class="skyCrop-parent">
+    <img
+        class="skyCrop-element"
+        alt=""
+		v-if="type === 'img'"
+        v-bind:src="srcString"
+		v-bind:style="styleObject" />
+
+	<div
+		class="skyCrop-element"
+		v-bind:style="styleObject"
+		v-else>
+	</div>
+</div>
