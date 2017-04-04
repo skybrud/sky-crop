@@ -25,12 +25,12 @@ const crop = (function crop() {
 		} else if (_mode === 'contain') {
 			if (parent.ratio < image.ratio) {
 				_calculatedSize.width = parent.width;
-				_calculatedSize.height = Math.round(parent.width * image.ratio);
+				_calculatedSize.height = Math.round(parent.width / image.ratio);
 			} else {
-				_calculatedSize.width = Math.round(parent.height / image.ratio);
+				_calculatedSize.width = Math.round(parent.height * image.ratio);
 				_calculatedSize.height = parent.height;
 			}
-			if (_round !== 1) {
+			if (_round !== 1 && !image._isDefault.round) {
 				console.warn('Crop.js: Rounding not supported when skyCropMode === contain');
 			}
 		} else {
