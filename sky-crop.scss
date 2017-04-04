@@ -1,11 +1,16 @@
-.skyCrop-parent {
+.sky-crop {
 	overflow: hidden;
 	width: 100%;
 	height: 400px;
-}
 
-div.skyCrop-element {
-	width: 100%;
-	height: 100%;
-	background-repeat: no-repeat;
+	div.element {
+		width: 100%;
+		height: 100%;
+		background-repeat: no-repeat;
+	}
+
+	.element {
+		margin: 0;
+		transition: transform 0.3s;
+	}
 }

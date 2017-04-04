@@ -1,14 +1,16 @@
-<div class="skyCrop-parent">
+<figure
+	class="sky-crop">
+
     <img
-        class="skyCrop-element"
-        alt=""
+        class="element"
+        v-bind:alt="altText"
 		v-if="type === 'img'"
         v-bind:src="srcString"
 		v-bind:style="styleObject" />
 
 	<div
-		class="skyCrop-element"
+		class="element"
 		v-bind:style="styleObject"
 		v-else>
 	</div>
-</div>
+</figure>
