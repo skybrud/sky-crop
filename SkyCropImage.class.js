@@ -15,7 +15,7 @@ export default class SkyCropImage {
 		/** Init object with default values */
 		this._inputUrl = inputSrc;
 		this._anchor = { x: '50%', y: '50%' };
-		this._round = 1;
+		this._round = 200;
 		this._mode = 'width';
 	}
 
@@ -40,8 +40,60 @@ export default class SkyCropImage {
 		this.round = params.round;
 	}
 
-	runCropJob() {
+	styling(object, isImgElement) {
+		const styleObject = [];
+
+		/* START: Calculate transform points */
+		const transformAnchor = {};
+
+		/* Convert anchor % to decimal */
+		const pointX = Number(this.anchor.x.replace('%', '')) / 100;
+		const pointY = Number(this.anchor.y.replace('%', '')) / 100;
+
+		/* Finding difference in size between parent and original image */
+		const differenceX = this.parent.width - this.calculatedInfo.width;
+		const differenceY = this.parent.height - this.calculatedInfo.height;
+
+		/* Setting focal point relative to difference in size */
+		transformAnchor.x = `${differenceX * pointX}px`;
+		transformAnchor.y = `${differenceY * pointY}px`;
+		/* END: Calculate transform points */
+
+		if (!isImgElement) {
+			styleObject.push({
+				name: 'background-image',
+				value: `url(${object.outputUrl})`,
+			});
+
+			styleObject.push({
+				name: 'background-position',
+				value: `${object.anchor.x} ${object.anchor.y}`,
+			});
+		} else {
+			styleObject.push({
+				name: 'transform',
+				value: `translate(${transformAnchor.x}, ${transformAnchor.y})`,
+			});
+		}
+
+		if (object.mode === 'contain' && object.parent.ratio < object.ratio) {
+			styleObject.push({
+				name: 'max-width',
+				value: '100%',
+			});
+			styleObject.push({
+				name: 'max-height',
+				value: '100%',
+			});
+		}
+
+		this._calculatedInfo.styles = styleObject;
+	}
+
+	runCropJob(isImgElement = true) {
 		platformObject.sourceJob(this);
+
+		this.styling(this, isImgElement);
 	}
 
 	/**
