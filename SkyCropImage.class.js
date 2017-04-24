@@ -76,7 +76,8 @@ export default class SkyCropImage {
 			});
 		}
 
-		if (object.mode === 'contain' && object.parent.ratio < object.ratio) {
+		if (object.mode && object.mode === 'contain'
+		&& object.parent.ratio < object.ratio) {
 			styleObject.push({
 				name: 'max-width',
 				value: '100%',
@@ -93,6 +94,10 @@ export default class SkyCropImage {
 	runCropJob(isImgElement = true) {
 		platformObject.sourceJob(this);
 
+		this.updateStyling(isImgElement);
+	}
+
+	updateStyling(isImgElement = true) {
 		this.styling(this, isImgElement);
 	}
 

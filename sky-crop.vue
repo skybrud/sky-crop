@@ -128,6 +128,7 @@
 				} else {
 					/* Recalculate anchorpoint with the new parent dimensions */
 					this.image.setParentInfo(this.$el);
+					this.image.updateStyling();
 				}
 				this.setAnchor(this.image);
 			});

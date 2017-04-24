@@ -7,6 +7,7 @@ import cropObject from '../utilities/crop';
 export default {
 	source: 'umbraco',
 	regExp: 'media',
+	immutableParams: [],
 	split: function split(url) {
 		/** Takes original url and extracts containing info */
 		const _data = {};
@@ -15,9 +16,14 @@ export default {
 		const query = url.slice(url.indexOf('?') + 1, url.length).split('&');
 
 		_data.imagePath = url.slice(0, url.indexOf('?'));
+		this.immutableParams = [];
 
 		for (let i = 0; i < query.length; i++) {
 			const param = query[i].split('=');
+
+			if (query[i].indexOf('height') === -1 && query[i].indexOf('width') === -1) {
+				this.immutableParams.push(query[i]);
+			}
 
 			if (param[1] !== '') {
 				params[param[0]] = param[1];
@@ -32,31 +38,18 @@ export default {
 	},
 	concat: function concat(object) {
 		/** Compiles a parameter url for calling the cropped image */
-		const _data = {};
-
-		let query = '';
 		const order = Object.keys(object).sort();
-
+		const concatData = [];
 		for (let i = 0; i < order.length; i++) {
 			const param = order[i];
 			const val = object[param];
-			if (val !== '') {
-				query += `${param}=${val}&`;
+
+			if (val !== '' && typeof val !== 'object') {
+				concatData.push(`${param}=${val}`);
 			}
 		}
 
-		_data.outputUrl = query.slice(0, -1);
-
-		return _data;
-	},
-	anchorPoint: function anchorPoint(anchorString) {
-		/** Creates an object for focal-/anchorpoint */
-		const _anchorObject = {};
-
-		_anchorObject.x = `${(anchorString.split(',')[0] * 100)}%`;
-		_anchorObject.y = `${(anchorString.split(',')[1] * 100)}%`;
-
-		return _anchorObject;
+		return concatData;
 	},
 	cropMode: function cropMode(cropName) {
 		/** translates Umbraco crop words to our version */
@@ -78,9 +71,6 @@ export default {
 
 		const urlInfo = this.split(image.inputUrl);
 
-		if (urlInfo.params.center) {
-			image.anchor = this.anchorPoint(urlInfo.params.center);
-		}
 		if (urlInfo.params.mode) {
 			urlInfo.params.mode = this.cropMode(urlInfo.params.mode);
 			image.mode = urlInfo.params.mode;
@@ -90,8 +80,8 @@ export default {
 		image.setImageParams(urlInfo.params);
 		image.calculatedInfo = cropObject.crop(image, image.parent);
 
-		const concatData = this.concat(image.calculatedInfo);
-		image.outputUrl = `${image.imagePath}?${concatData.outputUrl}`;
+		const paramUrl = this.immutableParams.concat(this.concat(image.calculatedInfo));
+		image.outputUrl = `${image.imagePath}?${paramUrl.join('&')}`;
 
 		return image;
 	},
