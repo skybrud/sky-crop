@@ -1,3 +1,6 @@
-import SkyCrop from './sky-crop.vue';
+import Vue from 'vue';
+import skyCrop from './sky-crop';
 
-export default SkyCrop;
+Vue.component('sky-crop', skyCrop);
+
+export default skyCrop;

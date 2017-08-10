@@ -1,16 +1,9 @@
-<figure
-	class="sky-crop">
-
-    <img
-        class="element"
-        v-bind:alt="altText"
-		v-if="type === 'img'"
-        v-bind:src="srcString"
-		v-bind:style="styleObject" />
-
-	<div
+<div class="sky-crop">
+	<img
 		class="element"
-		v-bind:style="styleObject"
-		v-else>
-	</div>
-</figure>
+		v-for="image in imageArray"
+		v-on:load="removeOldElement"
+		v-bind:src="image.src"
+		v-bind:style="image.styling"
+		v-bind:alt="alt" />
+</div>

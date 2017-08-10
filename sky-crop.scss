@@ -1,16 +1,12 @@
 .sky-crop {
-	overflow: hidden;
+	position: relative;
+	height: 100%;
 	width: 100%;
-	height: 400px;
-
-	div.element {
-		width: 100%;
-		height: 100%;
-		background-repeat: no-repeat;
-	}
+	overflow: hidden;
 
 	.element {
+		position: absolute;
 		margin: 0;
-		transition: transform 0.3s;
+		will-change: transform;
 	}
 }
