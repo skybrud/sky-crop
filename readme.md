@@ -1,4 +1,4 @@
-# sky-accordion
+# sky-crop
 > JS module for cropping images in accordance to the desired width and height.
 
 ## Dependencies
