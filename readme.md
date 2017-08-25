@@ -31,10 +31,10 @@ Desired point to be set as close to center as posible.
 
 ### mode
 Best result will be given if the container has width and height set in css.
-**width**: image will fill entire container width - overflow in y axis is hidden.
-**height**: image will fill entire container height - overflow in x axis is hidden.
-**contain**: image will always be fully visible.
-**cover**: image will fill entire container - overflow is hidden.
+* **width**: image will fill entire container width - overflow in y axis is hidden.
+* **height**: image will fill entire container height - overflow in x axis is hidden.
+* **contain**: image will always be fully visible.
+* **cover**: image will fill entire container - overflow is hidden.
 
 ### round
 Indication of how often you would like a recrop of your image. Case: image is loaded and starts with cropped dimensions at 400x300. At `round="100"` should the image be stretch to more than `500` in width and/or `400` in height, a recrop will be initiated.
