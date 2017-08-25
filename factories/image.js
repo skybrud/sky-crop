@@ -1,58 +1,71 @@
 import platformProvider from './platformProvider';
-import resizer from './resizer';
+import containerProvider from './containerProvider';
+import conditionProvider from './conditionProvider';
 import styleProvider from './styleProvider';
+import configProvider from './configProvider';
 
-export default (element, cropSrc, ancestorClass, mode, round, focal) => {
-	let ancestor = null;
-	let ancestorDimensions = null;
-	let cropInformation = null;
-	let styling = null;
-	let anchorString = null;
+export default (requested) => {
+	const container = containerProvider();
+	let config = configProvider(requested);
+	const platform = platformProvider(requested.src, config.mode, config.dpr);
+	let cropInformation = platform.crop(container);
 
-	const getAncestor = (domElement, selector) => {
-		if (typeof selector === 'string' && domElement.className.indexOf(selector) === -1) {
-			return getAncestor(domElement.parentNode, selector);
-		}
-		return domElement;
+	const focal = requested.focal || platform.focalPoint;
+
+	let styling = styleProvider(
+		cropInformation.dimensions,
+		container,
+		focal,
+		config);
+
+	// The following is for rerendering on the client.
+	const domBasedSetup = (element) => {
+		const domContainer = container.domBasedSetup(element, requested.container);
+		config = configProvider(requested);
+
+		cropInformation = platform.crop(domContainer);
+
+		const conditions = conditionProvider(
+				domContainer,
+				cropInformation.dimensions,
+				config);
+
+		styling = styleProvider(
+			cropInformation.dimensions,
+			domContainer,
+			focal,
+			config);
+
+		const crop = () => {
+			domContainer.reMeasure();
+			cropInformation = platform.crop(domContainer);
+		};
+
+		const recalcStyles = () => styling();
+
+		const checkRestyleConditions = () => {
+			domContainer.reMeasure();
+			return conditions.restyle();
+		};
+
+		return {
+			container: domContainer,
+			crop,
+			dimensions: cropInformation.dimensions,
+			recalcStyles,
+			shouldRecrop: conditions.recrop,
+			shouldRestyle: checkRestyleConditions,
+			src: cropInformation.url,
+			styling: styling(),
+			get config() {
+				return config;
+			},
+		};
 	};
 
-	const updateAncestorDimension = container => ({
-		width: container.clientWidth,
-		height: container.clientHeight,
-	});
-
-	ancestor = getAncestor(element, ancestorClass);
-	ancestorDimensions = updateAncestorDimension(ancestor);
-	cropInformation = platformProvider(cropSrc, ancestorDimensions, mode, round);
-
-	anchorString = focal || cropInformation.anchor;
-	styling = styleProvider(anchorString, mode);
-
 	return {
-		get src() {
-			return cropInformation.url;
-		},
-		get ancestor() {
-			return ancestor;
-		},
-		get dimensions() {
-			return cropInformation.dimensions;
-		},
-		get recropCondition() {
-			return resizer(mode, round, ancestor, cropInformation.dimensions);
-		},
-		get crop() {
-			ancestorDimensions = updateAncestorDimension(ancestor);
-			cropInformation = platformProvider(cropSrc, ancestorDimensions, mode, round);
-
-			return cropInformation.url;
-		},
-		get styling() {
-			return styling(cropInformation.dimensions, ancestorDimensions);
-		},
-		recalcStyles() {
-			ancestorDimensions = updateAncestorDimension(ancestor);
-			styling(cropInformation.dimensions, ancestorDimensions);
-		},
+		src: cropInformation.url,
+		styling: styling(),
+		domBasedSetup,
 	};
 };

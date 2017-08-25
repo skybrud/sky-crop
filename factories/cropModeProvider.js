@@ -1,48 +1,58 @@
-import roundProvider from './roundProvider';
-
-export default (selector, roundValue) => {
+/**
+ * Provides an factory for recropping image
+ *
+ * @param {string} selector: the selected crop mode
+ * @param {object} container: container object containing all relevant informaiton
+ * @param {integer} imageRatio: integer representing image height and width relation
+ * @return {object} return crop dimensions.
+ */
+export default (selector, container, imageRatio, dpr) => {
 	const calculated = {};
-	const round = roundProvider(roundValue);
 
 	const modes = {
-		width: (imageRatio, ancestorDimensions) => {
-			calculated.width = round(ancestorDimensions.width);
+		width: () => {
+			calculated.width = container.dimensions.width * dpr;
 			calculated.height = Math.ceil(calculated.width / imageRatio);
+			calculated.ratio = imageRatio;
 
 			return calculated;
 		},
-		height: (imageRatio, ancestorDimensions) => {
-			calculated.height = round(ancestorDimensions.height);
+		height: () => {
+			calculated.height = container.dimensions.height * dpr;
 			calculated.width = Math.ceil(calculated.height * imageRatio);
+			calculated.ratio = imageRatio;
 
 			return calculated;
 		},
-		cover: (imageRatio, ancestorDimensions) => {
-			calculated.width = round(ancestorDimensions.width);
-			calculated.height = round(ancestorDimensions.height);
-
-			return calculated;
-		},
-		contain: (imageRatio, ancestorDimensions) => {
-			const ancestorRatio = ancestorDimensions.width / ancestorDimensions.height;
+		cover: () => {
+			const ancestorRatio = container.dimensions.width / container.dimensions.height;
+			calculated.ratio = imageRatio;
 
 			if (imageRatio > ancestorRatio) {
-				calculated.width = ancestorDimensions.width;
-				calculated.height = Math.round(ancestorDimensions.width / imageRatio);
+				calculated.height = container.dimensions.height * dpr;
+				calculated.width = Math.round(calculated.height * imageRatio);
 			} else {
-				calculated.width = Math.round(ancestorDimensions.height * imageRatio);
-				calculated.height = ancestorDimensions.height;
+				calculated.width = container.dimensions.width * dpr;
+				calculated.height = Math.round(calculated.width / imageRatio);
+			}
+
+			return calculated;
+		},
+		contain: () => {
+			const ancestorRatio = container.dimensions.width / container.dimensions.height;
+			calculated.ratio = imageRatio;
+
+			if (imageRatio > ancestorRatio) {
+				calculated.width = container.dimensions.width * dpr;
+				calculated.height = Math.round(calculated.width / imageRatio);
+			} else {
+				calculated.height = container.dimensions.height * dpr;
+				calculated.width = Math.round(calculated.height * imageRatio);
 			}
 
 			return calculated;
 		},
 	};
 
-	/* Warn if undefined mode is selected and list avalible modes */
-	if (!modes[selector]) {
-		const availableModes = Object.keys(modes).join(' | ');
-		console.warn(`Mode '${selector}' does not exist - 'width' set as fallback. Available modes: ${availableModes}`);
-	}
-
-	return modes[selector] || modes.width;
+	return modes[selector]();
 };

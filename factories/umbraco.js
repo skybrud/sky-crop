@@ -3,22 +3,20 @@ import cropper from './cropper';
 /**
  * Operates on instance of 'cropper' and returns a string url
  *
- * @param {string} cropUrl: the provided url which contains original image info
- * @param {object} ancestorDimensions: object containing width and height measures
+ * @param {string} url: the provided url which contains original image info
  * @param {string} mode: requested fitting mode
- * @param {number} round: recrop interval
- * @return {string} compiled src url used as image source
+ * @param {integer} dpr: system devicePixelRatio setting
+ * @return {object} object containing crop factory and extracted focalPoint
  */
-export default (cropUrl, ancestorDimensions, mode, round) => {
-	const imagePath = cropUrl.slice(0, cropUrl.indexOf('?'));
-	const parameters = cropUrl.slice(cropUrl.indexOf('?') + 1, cropUrl.length).split('&');
+export default (url, mode, dpr) => {
+	const imagePath = url.slice(0, url.indexOf('?'));
+	const parameters = url.slice(url.indexOf('?') + 1, url.length).split('&');
 
-	const mutatedParameters = [];
 	let calculated = null;
 	let translatedMode = null;
 	let immutableParameters = [];
 	let imageDimensions = null;
-	let anchorString = null;
+	let focalPoint = null;
 
 	// Find sky-crop mode name
 	const modeTranslater = (term) => {
@@ -40,6 +38,7 @@ export default (cropUrl, ancestorDimensions, mode, round) => {
 	// Set parameters for return url
 	const heightOrWidth = string => string.indexOf('height') !== -1 || string.indexOf('width') !== -1;
 
+	// Finds all parameters which will returned untouched
 	immutableParameters = parameters.filter(param => !heightOrWidth(param));
 
 	imageDimensions = parameters.reduce((acc, cur) => {
@@ -50,7 +49,8 @@ export default (cropUrl, ancestorDimensions, mode, round) => {
 		return acc;
 	}, {});
 
-	anchorString = immutableParameters.reduce((acc, cur) => {
+	// Transforms decimal to passable syntax '50%,50%'.
+	focalPoint = immutableParameters.reduce((acc, cur) => {
 		if (cur.indexOf('center') !== -1) {
 			acc = `${Number(cur.split('=')[1].split(',')[0]) * 100}%,`;
 			acc += `${Number(cur.split('=')[1].split(',')[1]) * 100}%`;
@@ -59,15 +59,30 @@ export default (cropUrl, ancestorDimensions, mode, round) => {
 		return acc;
 	}, '');
 
-	calculated = cropper(imageDimensions, ancestorDimensions, translatedMode, round);
+	/**
+	 * Factory creating cropping url and extracting new image dimensions.
+	 *
+	 * @param {object} container: container information
+	 * @return {object} object containing crop url and extracted dimensions object
+	 */
+	const crop = (container) => {
+		const mutatedParameters = [];
+		calculated = cropper(imageDimensions, container, translatedMode, dpr);
 
-	Object.keys(calculated).forEach((key) => {
-		mutatedParameters.push(`${key}=${calculated[key]}`);
-	});
+		Object.keys(calculated).forEach((key) => {
+			if (key !== 'ratio') {
+				mutatedParameters.push(`${key}=${calculated[key]}`);
+			}
+		});
+
+		return {
+			url: `${imagePath}?${immutableParameters.join('&')}&${mutatedParameters.join('&')}`,
+			dimensions: calculated,
+		};
+	};
 
 	return {
-		url: `${imagePath}?${immutableParameters.join('&')}&${mutatedParameters.join('&')}`,
-		dimensions: calculated,
-		anchor: anchorString,
+		crop,
+		focalPoint,
 	};
 };
