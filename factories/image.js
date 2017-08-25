@@ -12,6 +12,7 @@ export default (requested) => {
 
 	const focal = requested.focal || platform.focalPoint;
 
+
 	let styling = styleProvider(
 		cropInformation.dimensions,
 		container,
@@ -26,9 +27,9 @@ export default (requested) => {
 		cropInformation = platform.crop(domContainer);
 
 		const conditions = conditionProvider(
-				domContainer,
-				cropInformation.dimensions,
-				config);
+			domContainer,
+			cropInformation.dimensions,
+			config);
 
 		styling = styleProvider(
 			cropInformation.dimensions,
