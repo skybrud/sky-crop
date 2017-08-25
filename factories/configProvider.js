@@ -5,13 +5,15 @@
  * @return {object} object containing setup and enviromental settings.
  */
 export default (requested) => {
+	const isServer = typeof window === 'undefined';
 	const supportedModes = ['width', 'height', 'cover', 'contain'];
-	const supportsCSS = !!((window.CSS && window.CSS.supports) || window.supportsCSS || false);
+	const supportsCSS = !isServer
+		&& Boolean((window.CSS && window.CSS.supports) || window.supportsCSS || false);
 	const supportsObjectFit = supportsCSS
 		&& window.CSS.supports('object-fit', 'cover')
 		&& window.CSS.supports('object-position', '0% 0%');
 
-	const dpr = window.devicePixelRatio;
+	const dpr = !isServer ? window.devicePixelRatio : 1;
 	const round = requested.round || 100;
 	let mode = requested.mode || 'width';
 	let auto = null;
