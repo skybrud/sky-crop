@@ -65,6 +65,8 @@ export default (requested) => {
 	};
 
 	return {
+		shouldRecrop: () => false,
+		shouldRestyle: () => false,
 		src: cropInformation.url,
 		styling: styling(),
 		domBasedSetup,
