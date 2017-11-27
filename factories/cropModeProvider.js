@@ -9,16 +9,19 @@
 export default (selector, container, imageRatio, dpr) => {
 	const calculated = {};
 
+	// TODO: ROUNDING MUST BE IMPLEMENTED DYNAMICLY
+	const cacheRound = value => Math.ceil((value * dpr) / 100) * 100;
+
 	const modes = {
 		width: () => {
-			calculated.width = container.dimensions.width * dpr;
+			calculated.width = cacheRound(container.dimensions.width);
 			calculated.height = Math.ceil(calculated.width / imageRatio);
 			calculated.ratio = imageRatio;
 
 			return calculated;
 		},
 		height: () => {
-			calculated.height = container.dimensions.height * dpr;
+			calculated.height = cacheRound(container.dimensions.height);
 			calculated.width = Math.ceil(calculated.height * imageRatio);
 			calculated.ratio = imageRatio;
 
@@ -29,10 +32,10 @@ export default (selector, container, imageRatio, dpr) => {
 			calculated.ratio = imageRatio;
 
 			if (imageRatio > ancestorRatio) {
-				calculated.height = container.dimensions.height * dpr;
+				calculated.height = cacheRound(container.dimensions.height);
 				calculated.width = Math.round(calculated.height * imageRatio);
 			} else {
-				calculated.width = container.dimensions.width * dpr;
+				calculated.width = cacheRound(container.dimensions.width);
 				calculated.height = Math.round(calculated.width / imageRatio);
 			}
 
@@ -43,10 +46,10 @@ export default (selector, container, imageRatio, dpr) => {
 			calculated.ratio = imageRatio;
 
 			if (imageRatio > ancestorRatio) {
-				calculated.width = container.dimensions.width * dpr;
+				calculated.width = cacheRound(container.dimensions.width);
 				calculated.height = Math.round(calculated.width / imageRatio);
 			} else {
-				calculated.height = container.dimensions.height * dpr;
+				calculated.height = cacheRound(container.dimensions.height);
 				calculated.width = Math.round(calculated.height * imageRatio);
 			}
 
