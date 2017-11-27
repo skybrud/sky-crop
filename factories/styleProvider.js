@@ -34,7 +34,7 @@ export default (image, container, requestedFocal, config) => {
 	const objectFitStyles = {
 		cover: () => ({
 			objectFit: config.mode,
-			objectPosition: `${focal.x}% ${focal.y}%`,
+			objectPosition: `${focal.y}% ${focal.x}%`,
 			height: '100%',
 			width: '100%',
 		}),
@@ -92,10 +92,13 @@ export default (image, container, requestedFocal, config) => {
 			const imageFullyVisible = container.dimensions.ratio <= image.ratio;
 			return imageFullyVisible ? styles.coverFit.y : styles.center.x;
 		},
-		contain: () => {
-			const containedByWidth = container.dimensions.ratio <= image.ratio;
-			return containedByWidth ? styles.center.y : styles.center.x;
-		},
+		contain: () => ({
+			maxWidth: '100%',
+			maxHeight: '100%',
+			top: '50%',
+			left: '50%',
+			transform: 'translate(-50%, -50%)',
+		}),
 		cover: () => {
 			const coverByWidth = container.dimensions.ratio <= image.ratio;
 			return coverByWidth ? styles.coverFit.y : styles.coverFit.x;
