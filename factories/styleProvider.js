@@ -81,6 +81,22 @@ export default (image, container, requestedFocal, config) => {
 				transform: `translate(-${focal.x}%, -${focal.y}%)`,
 			},
 		},
+		containFit: {
+			x: {
+				width: '100%',
+				height: 'auto',
+				top: '50%',
+				left: '0',
+				transform: 'translate(0%, -50%)',
+			},
+			y: {
+				width: 'auto',
+				height: '100%',
+				top: '0',
+				left: '50%',
+				transform: 'translate(-50%, 0%)',
+			},
+		},
 	};
 
 	const fitStyles = {
@@ -92,13 +108,10 @@ export default (image, container, requestedFocal, config) => {
 			const imageFullyVisible = container.dimensions.ratio <= image.ratio;
 			return imageFullyVisible ? styles.coverFit.y : styles.center.x;
 		},
-		contain: () => ({
-			maxWidth: '100%',
-			maxHeight: '100%',
-			top: '50%',
-			left: '50%',
-			transform: 'translate(-50%, -50%)',
-		}),
+		contain: () => {
+			const containToWidth = container.dimensions.ratio <= image.ratio;
+			return containToWidth ? styles.containFit.x : styles.containFit.y;
+		},
 		cover: () => {
 			const coverByWidth = container.dimensions.ratio <= image.ratio;
 			return coverByWidth ? styles.coverFit.y : styles.coverFit.x;
