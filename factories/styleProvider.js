@@ -34,7 +34,7 @@ export default (image, container, requestedFocal, config) => {
 	const objectFitStyles = {
 		cover: () => ({
 			objectFit: config.mode,
-			objectPosition: `${focal.y}% ${focal.x}%`,
+			objectPosition: `left ${focal.x}% top ${focal.y}%`,
 			height: '100%',
 			width: '100%',
 		}),
