@@ -57,8 +57,8 @@ export default (url, mode, dpr) => {
 		? '50%,50%'
 		: immutableParameters.reduce((acc, cur) => {
 			if (cur.indexOf('center') !== -1) {
-				acc = `${Number(cur.split('=')[1].split(',')[0]) * 100}%,`;
-				acc += `${Number(cur.split('=')[1].split(',')[1]) * 100}%`;
+				acc = `${Number(cur.split('=')[1].split(',')[1]) * 100}%,`;
+				acc += `${Number(cur.split('=')[1].split(',')[0]) * 100}%`;
 			}
 
 			return acc;
