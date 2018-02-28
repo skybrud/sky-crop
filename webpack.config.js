@@ -34,15 +34,15 @@ const config = {
 		],
 	},
 	plugins: [
-		new UglifyJsPlugin({
-			sourceMap: false,
-			uglifyOptions: {
-				mangle: true,
-				compress: {
-					warnings: false,
-				},
-			},
-		}),
+		// new UglifyJsPlugin({
+		// 	sourceMap: false,
+		// 	uglifyOptions: {
+		// 		mangle: true,
+		// 		compress: {
+		// 			warnings: false,
+		// 		},
+		// 	},
+		// }),
 	],
 };
 
@@ -56,6 +56,7 @@ module.exports = [
 		},
 	}),
 	merge(config, {
+		target: 'node',
 		entry: path.resolve(__dirname + '/src/' + name + '.vue'),
 		output: {
 			filename: name.toLowerCase() + '.js',
