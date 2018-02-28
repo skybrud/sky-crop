@@ -34,15 +34,15 @@ const config = {
 		],
 	},
 	plugins: [
-		// new UglifyJsPlugin({
-		// 	sourceMap: false,
-		// 	uglifyOptions: {
-		// 		mangle: true,
-		// 		compress: {
-		// 			warnings: false,
-		// 		},
-		// 	},
-		// }),
+		new UglifyJsPlugin({
+			sourceMap: false,
+			uglifyOptions: {
+				mangle: true,
+				compress: {
+					warnings: false,
+				},
+			},
+		}),
 	],
 };
 
