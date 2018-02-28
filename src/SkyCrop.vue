@@ -1,5 +1,5 @@
 <script>
-import SkyWindow from 'SkyWindow';
+import SkyWindow from 'sky-window';
 import imageInstance from './factories/image';
 
 export default {

@@ -1,5 +1,3 @@
-@import '~styles/utilities/animations';
-
 .sky-crop {
 	position: relative;
 	overflow: hidden;
@@ -15,9 +13,5 @@
 		&:first-of-type {
 			position: relative;
 		}
-	}
-
-	&.default .element {
-		animation: fade-in 2s 2s backwards;
 	}
 }
