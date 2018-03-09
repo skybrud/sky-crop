@@ -1,6 +1,6 @@
 {
   "name": "sky-crop",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Vue component for cropping images",
   "main": "dist/skycrop.js",
   "scripts": {
@@ -18,6 +18,6 @@
     "sky-window": "^1.0.4"
   },
   "devDependencies": {
-	"sky-build-setup": "https://github.com/skybrud/sky-build-setup.git"
+    "sky-build-setup": "https://github.com/skybrud/sky-build-setup.git"
   }
 }
