@@ -2,10 +2,16 @@ const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
+const packageJson = require('./package.json');
 
-const name = 'SkyCrop';
+const name = (() => {
+	const capitalise = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+	const nameArray = packageJson.name.split('-');
 
-const config = {
+	return `${capitalise(nameArray[0])}${capitalise(nameArray[1])}`;
+})();
+
+const baseConfig = {
 	output: {
 		path: path.resolve(__dirname + '/dist/'),
 	},
@@ -45,23 +51,41 @@ const config = {
 	],
 };
 
-module.exports = [
-	merge(config, {
-		entry: path.resolve(__dirname + '/src/plugin.js'),
-		output: {
-			filename: name.toLowerCase() + '.min.js',
-			libraryTarget: 'window',
-			library: name,
-		},
-	}),
-	merge(config, {
-		target: 'node',
-		entry: path.resolve(__dirname + '/src/' + name + '.vue'),
-		output: {
-			filename: name.toLowerCase() + '.js',
-			libraryTarget: 'umd',
-			library: name,
-			umdNamedDefine: true,
-		},
-	}),
-];
+const moduleConfig = {
+	target: 'node',
+	entry: path.resolve(__dirname + '/src/' + name + '.vue'),
+	output: {
+		filename: name.toLowerCase() + '.js',
+		libraryTarget: 'umd',
+		library: name,
+		umdNamedDefine: true,
+	},
+}
+
+const pluginConfig = {
+	entry: path.resolve(__dirname + '/src/plugin.js'),
+	output: {
+		filename: name.toLowerCase() + '.min.js',
+		libraryTarget: 'window',
+		library: name,
+	}
+}
+
+const serviceConfig = {
+	entry: path.resolve(__dirname + '/src/' + name + '.js'),
+	output: {
+		filename: name.toLocaleLowerCase() + '.js',
+		libraryTarget: 'umd',
+		library: name,
+		umdNamedDefine: true,
+	},
+}
+
+const config = name === 'SkyWindow'
+	? merge(baseConfig, serviceConfig)
+	: [
+		merge(baseConfig, pluginConfig),
+		merge(baseConfig, moduleConfig),
+	];
+
+module.exports = config;
