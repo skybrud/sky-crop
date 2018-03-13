@@ -1,12 +1,12 @@
 {
   "name": "sky-crop",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Vue component for cropping images",
   "main": "dist/skycrop.js",
   "scripts": {
-	  "build": "rimraf ./dist && ./node_modules && webpack --config ./webpack.config.js",
-	  "dist": "yarn install && yarn run build",
-	  "update": "rimraf ./node_modules && yarn run dist"
+    "build": "rimraf ./dist && ./node_modules && webpack --config ./webpack.config.js",
+    "dist": "yarn install && yarn run build",
+    "update": "rimraf ./node_modules && yarn run dist"
   },
   "build": "module",
   "author": "Skybrud.dk",
