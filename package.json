@@ -19,6 +19,9 @@
     "sky-window": "^1.0.4"
   },
   "devDependencies": {
-    "sky-build-setup": "https://github.com/skybrud/sky-build-setup.git#^1.0.0"
+	"sky-build-setup": "../sky-build-setup/"
+  },
+  "peerDependencies": {
+	"vue": "2.x"
   }
 }
