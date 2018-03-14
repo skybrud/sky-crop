@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf ./dist && webpack --config ./webpack.config.js",
     "dist": "yarn install && yarn run build",
-    "update-build": "rimraf ./node_modules && yarn install",
+    "update": "rimraf ./node_modules && yarn run build"
   },
   "build": "module",
   "author": "Skybrud.dk",
