@@ -8,7 +8,7 @@
     "dist": "yarn install && yarn run build",
     "update": "rimraf ./node_modules && yarn run dist"
   },
-  "build": "module",
+  "build": "plugin",
   "author": "Skybrud.dk",
   "license": "MIT",
   "repository": {
