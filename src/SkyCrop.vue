@@ -3,6 +3,7 @@ import SkyWindow from 'sky-window';
 import imageInstance from './factories/image';
 
 export default {
+	name: 'SkyCrop',
 	props: {
 		src: {
 			type: String,
@@ -52,6 +53,17 @@ export default {
 		this.imageArray.push(this.image);
 	},
 	mounted() {
+		if (this.auto === 'height') {
+			// avoid DOM height change after image load
+			const dimension = (source, search) => Number(source.substr(source.indexOf(search)).split('&')[0].split('=')[1]);
+
+			const width = dimension(this.src, 'width');
+			const height = dimension(this.src, 'height');
+			const ratio = width / height;
+
+			this.$el.style.height = `${this.$el.getBoundingClientRect().width / ratio}px`;
+		}
+
 		this.imageArray.push(this.newCrop());
 
 		// Only set restyle listener if the mode isn't forced.
