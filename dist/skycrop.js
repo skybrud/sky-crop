@@ -613,7 +613,7 @@ exports.default = {
 		    registerComponents = _Object$assign.registerComponents;
 
 		if (registerComponents) {
-			Vue.component('SkyCrop', _SkyCrop2.default);
+			Vue.component(_SkyCrop2.default.name, _SkyCrop2.default);
 		}
 	}
 };
