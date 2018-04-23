@@ -4716,8 +4716,8 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
-sky-build-setup@../sky-build-setup/:
-  version "1.1.0"
+sky-build-setup@../sky-build-setup:
+  version "1.1.1"
   dependencies:
     babel-core "^6.26.0"
     babel-loader "^7.1.2"

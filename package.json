@@ -2,7 +2,7 @@
   "name": "sky-crop",
   "version": "1.0.10",
   "description": "Vue component for cropping images",
-  "main": "dist/skycrop.js",
+  "main": "dist/skycrop.min.js",
   "scripts": {
     "build": "rimraf ./dist && webpack --config ./webpack.config.js",
     "dist": "yarn install && yarn run build",
