@@ -9,7 +9,7 @@ export default {
 		const { registerComponents } = Object.assign({}, defaults, options);
 
 		if (registerComponents) {
-			Vue.component('SkyCrop', SkyCrop);
+			Vue.component(SkyCrop.name, SkyCrop);
 		}
 	},
 };
