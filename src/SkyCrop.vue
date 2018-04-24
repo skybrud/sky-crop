@@ -1,5 +1,5 @@
 <script>
-import SkyWindow from 'sky-window';
+import resize from './helpers/resize';
 import imageInstance from './factories/image';
 
 export default {
@@ -47,6 +47,19 @@ export default {
 		newCrop() {
 			return this.image.domBasedSetup(this.$el);
 		},
+		resizeCrop() {
+			if (this.imageArray[0].shouldRecrop()) {
+				this.imageArray = this.imageArray.slice(0, 1);
+				this.imageArray.push(this.newCrop());
+			}
+		},
+		resizeRestyle() {
+			this.imageArray.forEach((instance) => {
+				if (instance.shouldRestyle()) {
+					this.$set(instance, 'styling', instance.recalcStyles());
+				}
+			});
+		},
 	},
 	created() {
 		this.$set(this, 'image', imageInstance(this.default));
@@ -64,34 +77,18 @@ export default {
 			this.$el.style.height = `${this.$el.getBoundingClientRect().width / ratio}px`;
 		}
 
-		this.imageArray.push(this.newCrop());
-
-		// Only set restyle listener if the mode isn't forced.
 		if (!this.auto) {
-			this.skyWindow.restyle = SkyWindow.instantResize.subscribe(() => {
-				this.imageArray.forEach((instance) => {
-					if (instance.shouldRestyle()) {
-						this.$set(instance, 'styling', instance.recalcStyles());
-					}
-				});
-			});
+			resize.on(this.resizeRestyle, false);
 		}
+		resize.on(this.resizeCrop);
 
-		this.skyWindow.recrop = SkyWindow.resize.subscribe(() => {
-			if (this.imageArray[0].shouldRecrop()) {
-				this.imageArray = this.imageArray.slice(0, 1);
-				this.imageArray.push(this.newCrop());
-			}
-		});
+		this.imageArray.push(this.newCrop());
 	},
 	beforeDestroy() {
-		if (this.skyWindow.recrop) {
-			this.skyWindow.recrop.unsubscribe();
+		if (!this.auto) {
+			resize.off(this.resizeRestyle, false);
 		}
-
-		if (this.skyWindow.restyle) {
-			this.skyWindow.restyle.unsubscribe();
-		}
+		resize.off(this.resizeCrop);
 	},
 };
 </script>
