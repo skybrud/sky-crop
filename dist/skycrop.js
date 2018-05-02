@@ -592,6 +592,7 @@ exports.default = function (imageDimensions, container, mode, dpr) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.SkyCrop = undefined;
 
 var _assign = __webpack_require__(13);
 
@@ -607,6 +608,7 @@ var defaults = {
 	registerComponents: true
 };
 
+exports.SkyCrop = _SkyCrop2.default;
 exports.default = {
 	install: function install(Vue, options) {
 		var _Object$assign = (0, _assign2.default)({}, defaults, options),
@@ -978,7 +980,7 @@ var Component = __webpack_require__(65)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/mhelmuth/Sites/mhelmuth/skybrud/sky-crop/src/SkyCrop.vue"
+Component.options.__file = "/Users/rudiornhoj/Sites/roernhoej/sky-crop/src/SkyCrop.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SkyCrop.vue: functional components are not supported with templates, they should use render functions.")}
 
