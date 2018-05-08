@@ -20,5 +20,7 @@ export default (src, mode, dpr) => {
 	// Finds first key which has a match in src and assigns it to 'const key'
 	const key = Object.keys(sourceCollection).find(regEx => src.indexOf(regEx) !== -1);
 
-	return sourceCollection[key](src, mode, dpr);
+	return key === undefined
+		? sourceCollection['media'](src, mode, dpr)
+		: sourceCollection[key](src, mode, dpr);
 };

@@ -2031,7 +2031,7 @@ exports.default = function (src, mode, dpr) {
 		return src.indexOf(regEx) !== -1;
 	});
 
-	return sourceCollection[key](src, mode, dpr);
+	return key === undefined ? sourceCollection['media'](src, mode, dpr) : sourceCollection[key](src, mode, dpr);
 };
 
 /***/ }),
