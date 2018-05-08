@@ -1,6 +1,6 @@
 {
   "name": "sky-crop",
-  "version": "1.0.14",
+  "version": "1.0.15-0",
   "description": "Vue component for cropping images",
   "main": "dist/skycrop.min.js",
   "scripts": {
