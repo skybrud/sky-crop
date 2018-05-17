@@ -75,11 +75,16 @@ export default {
 			const ratio = width / height;
 
 			this.$el.style.height = `${this.$el.getBoundingClientRect().width / ratio}px`;
+
+			this.$nextTick(() => {
+				this.$el.style.height = null;
+			});
 		}
 
 		if (!this.auto) {
 			resize.on(this.resizeRestyle, false);
 		}
+
 		resize.on(this.resizeCrop);
 
 		this.imageArray.push(this.newCrop());

@@ -1359,6 +1359,8 @@ exports.default = {
 		this.imageArray.push(this.image);
 	},
 	mounted: function mounted() {
+		var _this2 = this;
+
 		if (this.auto === 'height') {
 			var dimension = function dimension(source, search) {
 				return Number(source.substr(source.indexOf(search)).split('&')[0].split('=')[1]);
@@ -1369,11 +1371,16 @@ exports.default = {
 			var ratio = width / height;
 
 			this.$el.style.height = this.$el.getBoundingClientRect().width / ratio + 'px';
+
+			this.$nextTick(function () {
+				_this2.$el.style.height = null;
+			});
 		}
 
 		if (!this.auto) {
 			_resize2.default.on(this.resizeRestyle, false);
 		}
+
 		_resize2.default.on(this.resizeCrop);
 
 		this.imageArray.push(this.newCrop());
