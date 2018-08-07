@@ -47,6 +47,7 @@ Read as *`attributeName="defaultValue"` [supported types]*
 * `mode="width"` [String] : 'width', 'height', 'cover', 'contain'
 * `round="100"` [String | integer] 
 * `container="sky-crop"` [String | HTMLDomElement]
+* `:show-default="true"` [Boolean]
 *Class selector without `.(dot)` on element defined as container or the domElement.*
 
 #### auto
@@ -77,6 +78,26 @@ Class name or the desired HTMLDomElement. The class name must be provided withou
     </div>
     ...
 </div>
+```
+
+#### show-default
+Boolean prop (`true` by default). By default SkyCrop will load a small default crop of an image (server-side, if using SSR) until the DOM can be measured and the actual sized crop can be fetched. If false, this default crop will not be loaded while awaiting the correct size.
+
+## Events:
+The SkyCrop component emits two events:
+* `load` - when a cropped image finishes loading
+* `loading` - when fetching of a new crop initiates
+**Note:** These events can be triggered multiple times per component - for instance if the viewport is resized and a new crop is needed.
+
+Example:
+```html
+<sky-crop
+	src="https://source.unsplash.com/[yourDesiredImageSelector]/1600x900"
+	mode="cover"
+	round="200"
+    @load="yourOnImageLoadedMethod"
+    @loading="yourOnImageBeginLoadingMethod"
+/>
 ```
 
 # Credits

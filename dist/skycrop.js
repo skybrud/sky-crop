@@ -980,7 +980,7 @@ var Component = __webpack_require__(65)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/rudiornhoj/Sites/roernhoej/sky-crop/src/SkyCrop.vue"
+Component.options.__file = "/Users/mhelmuth/Sites/mhelmuth/skybrud/sky-crop/src/SkyCrop.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SkyCrop.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -1304,7 +1304,11 @@ exports.default = {
 		auto: String,
 		round: [String, Number],
 		focalpoint: String,
-		alt: String
+		alt: String,
+		showDefault: {
+			type: Boolean,
+			default: true
+		}
 	},
 	data: function data() {
 		return {
@@ -1314,7 +1318,8 @@ exports.default = {
 			},
 			imageArray: [],
 			image: null,
-			defaultCrop: true
+			defaultCrop: true,
+			loading: true
 		};
 	},
 
@@ -1331,9 +1336,19 @@ exports.default = {
 		}
 	},
 	methods: {
-		removeOldElement: function removeOldElement() {
+		addImage: function addImage(image) {
+			this.$emit('loading');
+			this.loading = true;
+			this.imageArray.push(image);
+		},
+		removeOldImages: function removeOldImages() {
 			this.imageArray = this.imageArray.slice(-1);
 			this.defaultCrop = false;
+		},
+		load: function load() {
+			this.removeOldImages();
+			this.loading = false;
+			this.$emit('load');
 		},
 		newCrop: function newCrop() {
 			return this.image.domBasedSetup(this.$el);
@@ -1341,7 +1356,7 @@ exports.default = {
 		resizeCrop: function resizeCrop() {
 			if (this.imageArray[0].shouldRecrop()) {
 				this.imageArray = this.imageArray.slice(0, 1);
-				this.imageArray.push(this.newCrop());
+				this.addImage(this.newCrop());
 			}
 		},
 		resizeRestyle: function resizeRestyle() {
@@ -1356,7 +1371,9 @@ exports.default = {
 	},
 	created: function created() {
 		this.$set(this, 'image', (0, _image2.default)(this.default));
-		this.imageArray.push(this.image);
+		if (this.showDefault) {
+			this.addImage(this.image);
+		}
 	},
 	mounted: function mounted() {
 		var _this2 = this;
@@ -1383,7 +1400,7 @@ exports.default = {
 
 		_resize2.default.on(this.resizeCrop);
 
-		this.imageArray.push(this.newCrop());
+		this.addImage(this.newCrop());
 	},
 	beforeDestroy: function beforeDestroy() {
 		if (!this.auto) {
@@ -3065,7 +3082,8 @@ exports.default = function (requested) {
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     class: ['sky-crop', {
-      'default': _vm.defaultCrop
+      'default': _vm.defaultCrop,
+      loading: _vm.loading,
     }]
   }, _vm._l((_vm.imageArray), function(image) {
     return _c('img', {
@@ -3076,7 +3094,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "alt": _vm.alt
       },
       on: {
-        "load": _vm.removeOldElement
+        "load": _vm.load
       }
     })
   }))

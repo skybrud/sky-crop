@@ -15,6 +15,10 @@ export default {
 		round: [String, Number],
 		focalpoint: String,
 		alt: String,
+		showDefault: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -25,6 +29,7 @@ export default {
 			imageArray: [],
 			image: null,
 			defaultCrop: true,
+			loading: true,
 		};
 	},
 	computed: {
@@ -40,9 +45,19 @@ export default {
 		},
 	},
 	methods: {
-		removeOldElement() {
+		addImage(image) {
+			this.$emit('loading');
+			this.loading = true;
+			this.imageArray.push(image);
+		},
+		removeOldImages() {
 			this.imageArray = this.imageArray.slice(-1);
 			this.defaultCrop = false;
+		},
+		load() {
+			this.removeOldImages();
+			this.loading = false;
+			this.$emit('load');
 		},
 		newCrop() {
 			return this.image.domBasedSetup(this.$el);
@@ -50,7 +65,7 @@ export default {
 		resizeCrop() {
 			if (this.imageArray[0].shouldRecrop()) {
 				this.imageArray = this.imageArray.slice(0, 1);
-				this.imageArray.push(this.newCrop());
+				this.addImage(this.newCrop());
 			}
 		},
 		resizeRestyle() {
@@ -63,7 +78,9 @@ export default {
 	},
 	created() {
 		this.$set(this, 'image', imageInstance(this.default));
-		this.imageArray.push(this.image);
+		if (this.showDefault) {
+			this.addImage(this.image);
+		}
 	},
 	mounted() {
 		if (this.auto === 'height') {
@@ -87,7 +104,7 @@ export default {
 
 		resize.on(this.resizeCrop);
 
-		this.imageArray.push(this.newCrop());
+		this.addImage(this.newCrop());
 	},
 	beforeDestroy() {
 		if (!this.auto) {
