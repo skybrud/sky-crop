@@ -46,7 +46,7 @@ export default {
 	},
 	methods: {
 		addImage(image) {
-			this.$emit('loading');
+			this.$emit('loadStart');
 			this.loading = true;
 			this.imageArray.push(image);
 		},

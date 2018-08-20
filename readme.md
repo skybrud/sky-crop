@@ -86,7 +86,7 @@ Boolean prop (`true` by default). By default SkyCrop will load a small default c
 ## Events:
 The SkyCrop component emits two events:
 * `load` - when a cropped image finishes loading
-* `loading` - when fetching of a new crop initiates
+* `loadStart` - when fetching of a new crop initiates
 **Note:** These events can be triggered multiple times per component - for instance if the viewport is resized and a new crop is needed.
 
 Example:
@@ -96,7 +96,7 @@ Example:
 	mode="cover"
 	round="200"
     @load="yourOnImageLoadedMethod"
-    @loading="yourOnImageBeginLoadingMethod"
+    @loadStart="yourOnImageStartLoadingMethod"
 />
 ```
 
