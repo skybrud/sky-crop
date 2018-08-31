@@ -1,6 +1,4 @@
 import _throttle from 'lodash.throttle';
-import 'core-js/fn/object/assign';
-import 'core-js/fn/array/find';
 
 var _callbacks = [];
 var _throttledCallbacks = [];
@@ -668,9 +666,9 @@ function imageInstance (requested) {
 	};
 }
 
-(function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=" /*# sourceMappingURL=SkyCrop.vue.map */"; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
+(function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=".sky-crop { position: relative; overflow: hidden; } .sky-crop .element { display: block; position: absolute; top: 0; left: 0; margin: 0; will-change: transform; } .sky-crop .element:first-of-type { position: relative; } "; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
 
-var SkyCrop = {
+var SkyCrop = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image){return _c('img',{staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.removeOldElement}})}))},staticRenderFns: [],
 	name: 'SkyCrop',
 	props: {
 		src: {

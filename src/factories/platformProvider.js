@@ -1,4 +1,3 @@
-import 'core-js/fn/array/find';
 import unsplash from './unsplash';
 import umbraco from './umbraco';
 

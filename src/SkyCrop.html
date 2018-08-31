@@ -1,10 +1,12 @@
-<div :class="['sky-crop', { 'default': defaultCrop }]">
-	<img
-		class="element"
-		v-for="image in imageArray"
-		@load="removeOldElement"
-		:src="image.src"
-		:style="image.styling"
-		:alt="alt"
-	/>
-</div>
+<template>
+	<div :class="['sky-crop', { 'default': defaultCrop }]">
+		<img
+			class="element"
+			v-for="image in imageArray"
+			@load="removeOldElement"
+			:src="image.src"
+			:style="image.styling"
+			:alt="alt"
+		/>
+	</div>
+</template>

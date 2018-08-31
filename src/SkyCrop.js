@@ -1,39 +1,3 @@
-<template>
-	<div :class="['sky-crop', { 'default': defaultCrop }]">
-		<img
-			class="element"
-			v-for="image in imageArray"
-			@load="removeOldElement"
-			:src="image.src"
-			:style="image.styling"
-			:alt="alt"
-		/>
-	</div>
-</template>
-
-
-<style lang="scss">
-.sky-crop {
-	position: relative;
-	overflow: hidden;
-
-	.element {
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		margin: 0;
-		will-change: transform;
-
-		&:first-of-type {
-			position: relative;
-		}
-	}
-}
-</style>
-
-
-<script>
 import resize from './helpers/resize';
 import imageInstance from './factories/image';
 
@@ -131,4 +95,3 @@ export default {
 		resize.off(this.resizeCrop);
 	},
 };
-</script>
