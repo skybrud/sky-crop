@@ -777,19 +777,21 @@
 		registerComponents: true,
 	};
 
-	var index = {
-		install: function install(Vue, options) {
-			var ref = Object.assign({}, defaults, options);
-			var registerComponents = ref.registerComponents;
+	function install(Vue, options) {
+		if (install.installed === true) {
+			return;
+		}
 
-			if (registerComponents) {
-				Vue.component(SkyCrop.name, SkyCrop);
-			}
-		},
-	};
+		var ref = Object.assign({}, defaults, options);
+		var registerComponents = ref.registerComponents;
+
+		if (registerComponents) {
+			Vue.component(SkyCrop.name, SkyCrop);
+		}
+	}
 
 	exports.SkyCrop = SkyCrop;
-	exports.default = index;
+	exports.default = install;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
