@@ -5,7 +5,7 @@
 	"main": "dist/sky-crop.umd.js",
 	"module": "dist/sky-crop.esm.js",
 	"browser": {
-		"./sfc": "src/sky-crop.vue"
+		"./sfc": "src/SkyCrop.vue"
 	},
 	"config": {
 		"moduleName": "SkyCrop",
