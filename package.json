@@ -22,7 +22,9 @@
 		"lodash.throttle": "^4.1.1"
 	},
 	"devDependencies": {
-		"np": "3.0.4",
 		"sky-build-setup": "../sky-build-setup"
+	},
+	"peerDependencies": {
+		"vue": "^2.5.0"
 	}
 }
