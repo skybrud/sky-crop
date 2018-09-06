@@ -2,15 +2,12 @@
 	"name": "sky-crop",
 	"version": "1.0.15",
 	"description": "Vue component for cropping images",
-	"main": "dist/sky-crop.umd.js",
-	"module": "dist/sky-crop.esm.js",
-	"browser": {
-		"./sfc": "src/SkyCrop.vue"
-	},
+	"main": "./dist/sky-crop.ssr.js",
+	"module": "./dist/sky-crop.esm.js",
+	"browser": "./dist/sky-crop.js",
+	"unpkg": "./dist/sky-crop.js",
 	"scripts": {
-		"dist": "rimraf dist && yarn run build:es && yarn run build:umd",
-		"build:umd": "yarn rollup --config rollup.config.js --format umd --file dist/sky-crop.umd.js",
-		"build:es": "yarn rollup --config rollup.config.js --format es --file dist/sky-crop.esm.js"
+		"dist": "yarn rimraf dist && yarn rollup --config rollup.config.js --environment BUILD:production"
 	},
 	"author": "Skybrud.dk",
 	"license": "MIT",

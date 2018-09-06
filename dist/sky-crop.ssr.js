@@ -1,4 +1,10 @@
-import _throttle from 'lodash.throttle';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var _throttle = _interopDefault(require('lodash.throttle'));
 
 const _callbacks = [];
 const _throttledCallbacks = [];
@@ -761,7 +767,7 @@ var script = {
             const __vue_script__ = script;
             
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image){return _c('img',{staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.removeOldElement}})}))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},[_vm._ssrNode((_vm._ssrList((_vm.imageArray),function(image){return ("<img"+(_vm._ssrAttr("src",image.src))+(_vm._ssrAttr("alt",_vm.alt))+" class=\"element\""+(_vm._ssrStyle(null,image.styling, null))+">")})))])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -773,7 +779,7 @@ var __vue_staticRenderFns__ = [];
   /* scoped */
   const __vue_scope_id__ = undefined;
   /* module identifier */
-  const __vue_module_identifier__ = undefined;
+  const __vue_module_identifier__ = "data-v-ae030ff6";
   /* functional template */
   const __vue_is_functional_template__ = false;
   /* component normalizer */
@@ -799,10 +805,30 @@ var __vue_staticRenderFns__ = [];
 
     {
       let hook;
-      if (style) {
+      {
+        // In SSR.
         hook = function(context) {
-          style.call(this, createInjector(context));
+          // 2.3 injection
+          context =
+            context || // cached call
+            (this.$vnode && this.$vnode.ssrContext) || // stateful
+            (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+          // 2.2 with runInNewContext: true
+          if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+            context = __VUE_SSR_CONTEXT__;
+          }
+          // inject component styles
+          if (style) {
+            style.call(this, createInjectorSSR(context));
+          }
+          // register component module identifier for async chunk inference
+          if (context && context._registeredComponents) {
+            context._registeredComponents.add(moduleIdentifier);
+          }
         };
+        // used by ssr in case component is cached and beforeCreate
+        // never gets called
+        component._ssrRegister = hook;
       }
 
       if (hook !== undefined) {
@@ -824,75 +850,47 @@ var __vue_staticRenderFns__ = [];
     return component
   }
   /* style inject */
-  function __vue_create_injector__() {
-    const head = document.head || document.getElementsByTagName('head')[0];
-    const styles = __vue_create_injector__.styles || (__vue_create_injector__.styles = {});
-    const isOldIE =
-      typeof navigator !== 'undefined' &&
-      /msie [6-9]\\b/.test(navigator.userAgent.toLowerCase());
+  
+  /* style inject SSR */
+  function __vue_create_injector_ssr__(context) {
+    if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+      context = __VUE_SSR_CONTEXT__;
+    }
+
+    if (!context) return function () {}
+
+    if (!context.hasOwnProperty('styles')) {
+      Object.defineProperty(context, 'styles', {
+        enumerable: true,
+        get: () => context._styles
+      });
+      context._renderStyles = renderStyles;
+    }
+
+    function renderStyles(styles) {
+      let css = '';
+      for (const {ids, media, parts} of styles) {
+        css +=
+          '<style data-vue-ssr-id="' + ids.join(' ') + '"' + (media ? ' media="' + media + '"' : '') + '>'
+          + parts.join('\n') +
+          '</style>';
+      }
+
+      return css
+    }
 
     return function addStyle(id, css) {
-      if (document.querySelector('style[data-vue-ssr-id~="' + id + '"]')) return // SSR styles are present.
-
-      const group = isOldIE ? css.media || 'default' : id;
-      const style = styles[group] || (styles[group] = { ids: [], parts: [], element: undefined });
+      const group = css.media || 'default';
+      const style = context._styles[group] || (context._styles[group] = { ids: [], parts: [] });
 
       if (!style.ids.includes(id)) {
-        let code = css.source;
-        let index = style.ids.length;
-
+        style.media = css.media;
         style.ids.push(id);
-
-        if (css.map) {
-          // https://developer.chrome.com/devtools/docs/javascript-debugging
-          // this makes source maps inside style tags work properly in Chrome
-          code += '\n/*# sourceURL=' + css.map.sources[0] + ' */';
-          // http://stackoverflow.com/a/26603875
-          code +=
-            '\n/*# sourceMappingURL=data:application/json;base64,' +
-            btoa(unescape(encodeURIComponent(JSON.stringify(css.map)))) +
-            ' */';
-        }
-
-        if (isOldIE) {
-          style.element = style.element || document.querySelector('style[data-group=' + group + ']');
-        }
-
-        if (!style.element) {
-          const el = style.element = document.createElement('style');
-          el.type = 'text/css';
-
-          if (css.media) el.setAttribute('media', css.media);
-          if (isOldIE) {
-            el.setAttribute('data-group', group);
-            el.setAttribute('data-next-index', '0');
-          }
-
-          head.appendChild(el);
-        }
-
-        if (isOldIE) {
-          index = parseInt(style.element.getAttribute('data-next-index'));
-          style.element.setAttribute('data-next-index', index + 1);
-        }
-
-        if (style.element.styleSheet) {
-          style.parts.push(code);
-          style.element.styleSheet.cssText = style.parts
-            .filter(Boolean)
-            .join('\n');
-        } else {
-          const textNode = document.createTextNode(code);
-          const nodes = style.element.childNodes;
-          if (nodes[index]) style.element.removeChild(nodes[index]);
-          if (nodes.length) style.element.insertBefore(textNode, nodes[index]);
-          else style.element.appendChild(textNode);
-        }
+        let code = css.source;
+        style.parts.push(code);
       }
     }
   }
-  /* style inject SSR */
-  
 
   
   var SkyCrop = __vue_normalize__(
@@ -902,8 +900,8 @@ var __vue_staticRenderFns__ = [];
     __vue_scope_id__,
     __vue_is_functional_template__,
     __vue_module_identifier__,
-    __vue_create_injector__,
-    undefined
+    undefined,
+    __vue_create_injector_ssr__
   );
 
 const defaults = {
@@ -922,5 +920,5 @@ function install(Vue, options) {
 	}
 }
 
-export default install;
-export { SkyCrop };
+exports.SkyCrop = SkyCrop;
+exports.default = install;
