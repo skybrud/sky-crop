@@ -7,16 +7,10 @@
 	"browser": {
 		"./sfc": "src/SkyCrop.vue"
 	},
-	"config": {
-		"moduleName": "SkyCrop",
-		"distName": "sky-crop"
-	},
 	"scripts": {
-		"dist": "yarn run merge && yarn run build:es && yarn run build:umd",
+		"dist": "rimraf dist && yarn run build:es && yarn run build:umd",
 		"build:umd": "yarn rollup --config rollup.config.js --format umd --file dist/sky-crop.umd.js",
-		"build:es": "yarn rollup --config rollup.config.js --format es --file dist/sky-crop.esm.js",
-		"merge": "./merge.sh",
-		"allowMerge": "chmod 755 ./merge.sh"
+		"build:es": "yarn rollup --config rollup.config.js --format es --file dist/sky-crop.esm.js"
 	},
 	"author": "Skybrud.dk",
 	"license": "MIT",
