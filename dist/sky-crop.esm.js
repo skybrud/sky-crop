@@ -761,7 +761,7 @@ var script = {
             const __vue_script__ = script;
             
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image){return _c('img',{staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.removeOldElement}})}))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image){return _c('img',{staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.load}})}))};
 var __vue_staticRenderFns__ = [];
 
   /* style */
