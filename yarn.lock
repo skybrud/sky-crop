@@ -634,8 +634,9 @@ rollup@^0.65.2:
     "@types/estree" "0.0.39"
     "@types/node" "*"
 
-sky-build-setup@../sky-build-setup:
-  version "1.1.3-1"
+"sky-build-setup@https://github.com/skybrud/sky-build-setup.git":
+  version "2.0.0"
+  resolved "https://github.com/skybrud/sky-build-setup.git#9e5654764c0ea9ac87e3fd8841d34b98a264bec0"
   dependencies:
     postcss "^7.0.2"
     rimraf "^2.6.2"
