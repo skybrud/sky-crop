@@ -6,12 +6,14 @@ const defaults = {
 
 export { SkyCrop };
 
-export default {
-	install(Vue, options) {
-		const { registerComponents } = Object.assign({}, defaults, options);
+export default function install(Vue, options) {
+	if (install.installed === true) {
+		return;
+	}
 
-		if (registerComponents) {
-			Vue.component(SkyCrop.name, SkyCrop);
-		}
-	},
+	const { registerComponents } = Object.assign({}, defaults, options);
+
+	if (registerComponents) {
+		Vue.component(SkyCrop.name, SkyCrop);
+	}
 };

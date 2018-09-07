@@ -1,4 +1,3 @@
-import 'core-js/fn/object/assign';
 import cropper from './cropper';
 
 /**
