@@ -21,6 +21,9 @@ Begin by importing and installing the SkyCrop Vue plugin:
 import Vue from 'vue';
 import SkyCrop from 'sky-crop';
 
+// If you want to use SkyCrop baseline scss add the following line
+import './node_modules/sky-crop/src/SkyCrop.scss';
+
 Vue.use(SkyCrop);
 
 ```
@@ -40,12 +43,12 @@ Advanced example:
 	round="200"
 />
 ```
-### Available attributes (optional): 
+### Available attributes (optional):
 Read as *`attributeName="defaultValue"` [supported types]*
 * `auto="null"` [String] : 'width', 'height'
 * `focal="50%,50%"` [String] : 'x%,y%' from top left cornor of image
 * `mode="width"` [String] : 'width', 'height', 'cover', 'contain'
-* `round="100"` [String | integer] 
+* `round="100"` [String | integer]
 * `container="sky-crop"` [String | HTMLDomElement]
 * `:show-default="true"` [Boolean]
 *Class selector without `.(dot)` on element defined as container or the domElement.*
