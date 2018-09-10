@@ -4,8 +4,7 @@
 	"description": "Vue component for cropping images",
 	"main": "./dist/sky-crop.ssr.js",
 	"module": "./dist/sky-crop.esm.js",
-	"browser": "./dist/sky-crop.js",
-	"unpkg": "./dist/sky-crop.js",
+	"browser": "./dist/sky-crop.esm.js",
 	"scripts": {
 		"dist": "yarn rimraf dist && yarn run build",
 		"build": "yarn rollup --config rollup.config.js --environment BUILD:production"
