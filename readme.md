@@ -21,8 +21,8 @@ Begin by importing and installing the SkyCrop Vue plugin:
 import Vue from 'vue';
 import SkyCrop from 'sky-crop';
 
-// If you want to use SkyCrop baseline scss add the following line
-import './node_modules/sky-crop/src/SkyCrop.scss';
+// If you want to use the baseline scss add the following line
+import '${YOUR-PROJECT-ROOT-PATH}/node_modules/sky-crop/src/SkyCrop.scss';
 
 Vue.use(SkyCrop);
 
