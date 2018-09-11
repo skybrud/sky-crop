@@ -675,6 +675,10 @@ var script = {
 		round: [String, Number],
 		focalpoint: String,
 		alt: String,
+		showDefault: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -685,6 +689,7 @@ var script = {
 			imageArray: [],
 			image: null,
 			defaultCrop: true,
+			loading: true,
 		};
 	},
 	computed: {
@@ -700,9 +705,19 @@ var script = {
 		},
 	},
 	methods: {
-		removeOldElement() {
+		addImage(image) {
+			this.$emit('loading');
+			this.loading = true;
+			this.imageArray.push(image);
+		},
+		removeOldImages() {
 			this.imageArray = this.imageArray.slice(-1);
 			this.defaultCrop = false;
+		},
+		load() {
+			this.removeOldImages();
+			this.loading = false;
+			this.$emit('load');
 		},
 		newCrop() {
 			return this.image.domBasedSetup(this.$el);
@@ -710,7 +725,7 @@ var script = {
 		resizeCrop() {
 			if (this.imageArray[0].shouldRecrop()) {
 				this.imageArray = this.imageArray.slice(0, 1);
-				this.imageArray.push(this.newCrop());
+				this.addImage(this.newCrop());
 			}
 		},
 		resizeRestyle() {
@@ -723,7 +738,9 @@ var script = {
 	},
 	created() {
 		this.$set(this, 'image', imageInstance(this.default));
-		this.imageArray.push(this.image);
+		if (this.showDefault) {
+			this.addImage(this.image);
+		}
 	},
 	mounted() {
 		if (this.auto === 'height') {
@@ -747,7 +764,7 @@ var script = {
 
 		resize.on(this.resizeCrop);
 
-		this.imageArray.push(this.newCrop());
+		this.addImage(this.newCrop());
 	},
 	beforeDestroy() {
 		if (!this.auto) {
@@ -761,7 +778,7 @@ var script = {
             const __vue_script__ = script;
             
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image){return _c('img',{staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.load}})}))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image,index){return _c('img',{key:index,staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.load}})}))};
 var __vue_staticRenderFns__ = [];
 
   /* style */

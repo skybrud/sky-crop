@@ -1,7 +1,8 @@
 <div :class="['sky-crop', { 'default': defaultCrop }]">
 	<img
 		class="element"
-		v-for="image in imageArray"
+		v-for="(image, index) in imageArray"
+		:key="index"
 		@load="load"
 		:src="image.src"
 		:style="image.styling"
