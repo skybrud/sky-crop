@@ -90,7 +90,11 @@ export default {
 			const height = dimension(this.src, 'height');
 			const ratio = width / height;
 
-			this.$el.style.height = `${this.$el.getBoundingClientRect().width / ratio}px`;
+			const calculatedHeight = this.$el.getBoundingClientRect().width / ratio;
+
+			if (calculatedHeight) {
+				this.$el.style.height = `${calculatedHeight}px`;
+			}
 
 			this.$nextTick(() => {
 				this.$el.style.height = null;
