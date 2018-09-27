@@ -751,7 +751,11 @@ var script = {
 			const height = dimension(this.src, 'height');
 			const ratio = width / height;
 
-			this.$el.style.height = `${this.$el.getBoundingClientRect().width / ratio}px`;
+			const calculatedHeight = this.$el.getBoundingClientRect().width / ratio;
+
+			if (calculatedHeight) {
+				this.$el.style.height = `${calculatedHeight}px`;
+			}
 
 			this.$nextTick(() => {
 				this.$el.style.height = null;
@@ -784,7 +788,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-ae030ff6_0", { source: "\n.sky-crop{position:relative;overflow:hidden;position:absolute;top:0;left:0;margin:0;will-change:transform\n}", map: undefined, media: undefined });
+    inject("data-v-d5d45578_0", { source: "\n.sky-crop{position:relative;overflow:hidden\n}\n.sky-crop .element{display:block;position:absolute;top:0;left:0;margin:0;will-change:transform\n}\n.sky-crop .element:first-of-type{position:relative\n}", map: undefined, media: undefined });
 
   };
   /* scoped */
