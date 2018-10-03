@@ -963,7 +963,7 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-node-sass@^4.9.3:
+node-sass@^4.5.3, node-sass@^4.9.3:
   version "4.9.3"
   resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.9.3.tgz#f407cf3d66f78308bb1e346b24fa428703196224"
   dependencies:
@@ -1371,6 +1371,13 @@ rollup-plugin-buble@^0.19.2:
     buble "^0.19.2"
     rollup-pluginutils "^2.0.1"
 
+rollup-plugin-scss@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-scss/-/rollup-plugin-scss-0.4.0.tgz#26b57c3c1601fb10087ff28c339e66aaa8b1e638"
+  dependencies:
+    node-sass "^4.5.3"
+    rollup-pluginutils "^2.0.1"
+
 rollup-plugin-vue@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/rollup-plugin-vue/-/rollup-plugin-vue-4.3.2.tgz#0bdf0cf677565b0ac2358d590f177b6b4ded8cce"
@@ -1438,14 +1445,15 @@ signal-exit@^3.0.0:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
 "sky-build-setup@https://github.com/skybrud/sky-build-setup.git":
-  version "2.0.5"
-  resolved "https://github.com/skybrud/sky-build-setup.git#68be874564b826339bd06f1c5b9fe1d0c2160596"
+  version "2.0.6-0"
+  resolved "https://github.com/skybrud/sky-build-setup.git#f0a88aee7a28c328c6b349b7c7d435a8f46914cc"
   dependencies:
     node-sass "^4.9.3"
     postcss "^7.0.2"
     rimraf "^2.6.2"
     rollup "^0.65.2"
     rollup-plugin-buble "^0.19.2"
+    rollup-plugin-scss "^0.4.0"
     rollup-plugin-vue "^4.3.2"
     vue-template-compiler "^2.5.17"
 

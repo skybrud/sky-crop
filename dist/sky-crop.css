@@ -1,0 +1,14 @@
+.sky-crop {
+  position: relative;
+  overflow: hidden; }
+
+.sky-crop .element {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  will-change: transform; }
+
+.sky-crop .element:first-of-type {
+  position: relative; }
