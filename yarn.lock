@@ -1445,8 +1445,8 @@ signal-exit@^3.0.0:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
 "sky-build-setup@https://github.com/skybrud/sky-build-setup.git":
-  version "2.0.6-0"
-  resolved "https://github.com/skybrud/sky-build-setup.git#f0a88aee7a28c328c6b349b7c7d435a8f46914cc"
+  version "2.0.6"
+  resolved "https://github.com/skybrud/sky-build-setup.git#0c89bec017098d0becf9a986fdd25e521f84ce42"
   dependencies:
     node-sass "^4.9.3"
     postcss "^7.0.2"

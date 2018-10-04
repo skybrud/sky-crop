@@ -1,17 +1,17 @@
 import _throttle from 'lodash.throttle';
 
-const _callbacks = [];
-const _throttledCallbacks = [];
-let _listenerOn = false;
+var _callbacks = [];
+var _throttledCallbacks = [];
+var _listenerOn = false;
 
-const runCallbacks = () => {
-	for (let i = _callbacks.length - 1; i >= 0; i--) {
+var runCallbacks = function () {
+	for (var i = _callbacks.length - 1; i >= 0; i--) {
 		_callbacks[i]();
 	}
 };
 
-const runThrottledCallbacks = _throttle(() => {
-	for (let i = _throttledCallbacks.length - 1; i >= 0; i--) {
+var runThrottledCallbacks = _throttle(function () {
+	for (var i = _throttledCallbacks.length - 1; i >= 0; i--) {
 		_throttledCallbacks[i]();
 	}
 }, 300);
@@ -21,8 +21,10 @@ function onResize() {
 	runThrottledCallbacks();
 }
 
-function on(fn, throttle = true) {
-	const array = (throttle) ? _throttledCallbacks : _callbacks;
+function on(fn, throttle) {
+	if ( throttle === void 0 ) throttle = true;
+
+	var array = (throttle) ? _throttledCallbacks : _callbacks;
 	array.push(fn);
 	if (typeof window !== 'undefined' && !_listenerOn) {
 		window.addEventListener('resize', onResize);
@@ -30,9 +32,11 @@ function on(fn, throttle = true) {
 	}
 }
 
-function off(fn, throttle = true) {
-	const array = (throttle) ? _throttledCallbacks : _callbacks;
-	const index = array.indexOf(fn);
+function off(fn, throttle) {
+	if ( throttle === void 0 ) throttle = true;
+
+	var array = (throttle) ? _throttledCallbacks : _callbacks;
+	var index = array.indexOf(fn);
 	if (index > -1) {
 		array.splice(index, 1);
 	}
@@ -46,8 +50,8 @@ function off(fn, throttle = true) {
 }
 
 var resize = {
-	on,
-	off,
+	on: on,
+	off: off,
 };
 
 /**
@@ -58,35 +62,35 @@ var resize = {
  * @param {integer} imageRatio: integer representing image height and width relation
  * @return {object} return crop dimensions.
  */
-var cropModeProvider = (selector, container, imageRatio, dpr) => {
-	const calculated = {};
+function cropModeProvider (selector, container, imageRatio, dpr) {
+	var calculated = {};
 
-	const roundValues = object => ({
+	var roundValues = function (object) { return ({
 		width: Math.round(object.width),
 		height: Math.round(object.height),
 		ratio: object.ratio,
-	});
+	}); };
 
 	// TODO: ROUNDING MUST BE IMPLEMENTED DYNAMICLY
-	const cacheRound = value => Math.ceil((value * dpr) / 100) * 100;
+	var cacheRound = function (value) { return Math.ceil((value * dpr) / 100) * 100; };
 
-	const modes = {
-		width: () => {
+	var modes = {
+		width: function () {
 			calculated.width = cacheRound(container.dimensions.width);
 			calculated.height = Math.ceil(calculated.width / imageRatio);
 			calculated.ratio = imageRatio;
 
 			return roundValues(calculated);
 		},
-		height: () => {
+		height: function () {
 			calculated.height = cacheRound(container.dimensions.height);
 			calculated.width = Math.ceil(calculated.height * imageRatio);
 			calculated.ratio = imageRatio;
 
 			return roundValues(calculated);
 		},
-		cover: () => {
-			const ancestorRatio = container.dimensions.width / container.dimensions.height;
+		cover: function () {
+			var ancestorRatio = container.dimensions.width / container.dimensions.height;
 			calculated.ratio = imageRatio;
 
 			if (imageRatio > ancestorRatio) {
@@ -99,8 +103,8 @@ var cropModeProvider = (selector, container, imageRatio, dpr) => {
 
 			return roundValues(calculated);
 		},
-		contain: () => {
-			const ancestorRatio = container.dimensions.width / container.dimensions.height;
+		contain: function () {
+			var ancestorRatio = container.dimensions.width / container.dimensions.height;
 			calculated.ratio = imageRatio;
 
 			if (imageRatio > ancestorRatio) {
@@ -116,7 +120,7 @@ var cropModeProvider = (selector, container, imageRatio, dpr) => {
 	};
 
 	return modes[selector]();
-};
+}
 
 /**
  * Takes crop input and passes it to the cropModeProvider and returns the result generated
@@ -127,12 +131,12 @@ var cropModeProvider = (selector, container, imageRatio, dpr) => {
  * @param {object} mode: requested mode
  * @return {object} returning crop dimensions .
  */
-var cropper = (imageDimensions, container, mode, dpr) => {
-	const ratio = imageDimensions.width / imageDimensions.height;
-	const selectedMode = cropModeProvider(mode, container, ratio, dpr);
+function cropper (imageDimensions, container, mode, dpr) {
+	var ratio = imageDimensions.width / imageDimensions.height;
+	var selectedMode = cropModeProvider(mode, container, ratio, dpr);
 
 	return selectedMode;
-};
+}
 
 /**
  * Operates on instance of 'cropper' and returns a string url
@@ -142,28 +146,28 @@ var cropper = (imageDimensions, container, mode, dpr) => {
  * @param {string} mode: requested fitting mode
  * @return {string} compiled src url used as image source
  */
-var unsplash = (cropUrl, mode, dpr) => {
-	const parameters = cropUrl.split('/');
-	const inputWidth = parameters[parameters.length - 1].split('x')[0];
-	const inputHeight = parameters[parameters.length - 1].split('x')[1];
-	const isNumeric = Boolean(Number(inputWidth)) && Boolean(Number(inputHeight));
-	let calculated = null;
+function unsplash (cropUrl, mode, dpr) {
+	var parameters = cropUrl.split('/');
+	var inputWidth = parameters[parameters.length - 1].split('x')[0];
+	var inputHeight = parameters[parameters.length - 1].split('x')[1];
+	var isNumeric = Boolean(Number(inputWidth)) && Boolean(Number(inputHeight));
+	var calculated = null;
 
-	let imageDimensions = {
+	var imageDimensions = {
 		width: Number(inputWidth),
 		height: Number(inputHeight),
 	};
 
-	const crop = (container) => {
+	var crop = function (container) {
 		// Fallback if input is missing dimensions
 		if (!isNumeric) {
 			imageDimensions = Object.assign({}, container.dimensions);
-			console.warn(`Module sky-crop: Container dimension used! Provided url did not contain width and/or height parameters '${cropUrl}'`);
+			console.warn(("Module sky-crop: Container dimension used! Provided url did not contain width and/or height parameters '" + cropUrl + "'"));
 		}
 
 		calculated = cropper(imageDimensions, container, mode, dpr);
 
-		parameters[parameters.length - 1] = `${calculated.width}x${calculated.height}`;
+		parameters[parameters.length - 1] = (calculated.width) + "x" + (calculated.height);
 
 		return {
 			url: parameters.join('/'),
@@ -172,9 +176,9 @@ var unsplash = (cropUrl, mode, dpr) => {
 	};
 
 	return {
-		crop,
+		crop: crop,
 	};
-};
+}
 
 /**
  * Operates on instance of 'cropper' and returns a string url
@@ -184,19 +188,19 @@ var unsplash = (cropUrl, mode, dpr) => {
  * @param {integer} dpr: system devicePixelRatio setting
  * @return {object} object containing crop factory and extracted focalPoint
  */
-var umbraco = (url, mode, dpr) => {
-	const imagePath = url.slice(0, url.indexOf('?'));
-	const parameters = url.slice(url.indexOf('?') + 1, url.length).split('&');
+function umbraco (url, mode, dpr) {
+	var imagePath = url.slice(0, url.indexOf('?'));
+	var parameters = url.slice(url.indexOf('?') + 1, url.length).split('&');
 
-	let calculated = null;
-	let translatedMode = null;
-	let immutableParameters = [];
-	let imageDimensions = null;
-	let focalPoint = null;
+	var calculated = null;
+	var translatedMode = null;
+	var immutableParameters = [];
+	var imageDimensions = null;
+	var focalPoint = null;
 
 	// Find sky-crop mode name
-	const modeTranslater = (term) => {
-		const terms = {
+	var modeTranslater = function (term) {
+		var terms = {
 			pad: 'contain',
 			boxpad: 'contain',
 			contain: 'contain',
@@ -213,12 +217,12 @@ var umbraco = (url, mode, dpr) => {
 	translatedMode = modeTranslater(mode);
 
 	// Set parameters for return url
-	const heightOrWidth = string => string.indexOf('height') !== -1 || string.indexOf('width') !== -1;
+	var heightOrWidth = function (string) { return string.indexOf('height') !== -1 || string.indexOf('width') !== -1; };
 
 	// Finds all parameters which will returned untouched
-	immutableParameters = parameters.filter(param => !heightOrWidth(param));
+	immutableParameters = parameters.filter(function (param) { return !heightOrWidth(param); });
 
-	imageDimensions = parameters.reduce((acc, cur) => {
+	imageDimensions = parameters.reduce(function (acc, cur) {
 		if (heightOrWidth(cur)) {
 			acc[cur.split('=')[0]] = Number(cur.split('=')[1]);
 		}
@@ -227,14 +231,14 @@ var umbraco = (url, mode, dpr) => {
 	}, {});
 
 	// Transforms decimal to passable syntax '50%,50%'.
-	const useCenterFocal = url.indexOf('anchor=center') !== -1 || url.indexOf('center=') === -1;
+	var useCenterFocal = url.indexOf('anchor=center') !== -1 || url.indexOf('center=') === -1;
 
 	focalPoint = useCenterFocal
 		? '50%,50%'
-		: immutableParameters.reduce((acc, cur) => {
+		: immutableParameters.reduce(function (acc, cur) {
 			if (cur.indexOf('center') !== -1) {
-				acc = `${Number(cur.split('=')[1].split(',')[1]) * 100}%,`;
-				acc += `${Number(cur.split('=')[1].split(',')[0]) * 100}%`;
+				acc = (Number(cur.split('=')[1].split(',')[1]) * 100) + "%,";
+				acc += (Number(cur.split('=')[1].split(',')[0]) * 100) + "%";
 			}
 
 			return acc;
@@ -246,27 +250,27 @@ var umbraco = (url, mode, dpr) => {
 	 * @param {object} container: container information
 	 * @return {object} object containing crop url and extracted dimensions object
 	 */
-	const crop = (container) => {
-		const mutatedParameters = [];
+	var crop = function (container) {
+		var mutatedParameters = [];
 		calculated = cropper(imageDimensions, container, translatedMode, dpr);
 
-		Object.keys(calculated).forEach((key) => {
+		Object.keys(calculated).forEach(function (key) {
 			if (key !== 'ratio') {
-				mutatedParameters.push(`${key}=${calculated[key]}`);
+				mutatedParameters.push((key + "=" + (calculated[key])));
 			}
 		});
 
 		return {
-			url: `${imagePath}?${immutableParameters.join('&')}&${mutatedParameters.join('&')}`,
+			url: (imagePath + "?" + (immutableParameters.join('&')) + "&" + (mutatedParameters.join('&'))),
 			dimensions: calculated,
 		};
 	};
 
 	return {
-		crop,
-		focalPoint,
+		crop: crop,
+		focalPoint: focalPoint,
 	};
-};
+}
 
 /**
  * Initiated cropping based on image source.
@@ -276,20 +280,20 @@ var umbraco = (url, mode, dpr) => {
  * @param {integer} dpr: system devicePixelRatio setting
  * @return {function} cropping functionallity from the needed platform
  */
-var platformProvider = (src, mode, dpr) => {
+function platformProvider (src, mode, dpr) {
 	// "Key: value"" is equeal to "regEx: required job"
-	const sourceCollection = {
+	var sourceCollection = {
 		'source.unsplash': unsplash,
 		media: umbraco,
 	};
 
 	// Finds first key which has a match in src and assigns it to 'const key'
-	const key = Object.keys(sourceCollection).find(regEx => src.indexOf(regEx) !== -1);
+	var key = Object.keys(sourceCollection).find(function (regEx) { return src.indexOf(regEx) !== -1; });
 
 	return key === undefined
 		? sourceCollection['media'](src, mode, dpr)
 		: sourceCollection[key](src, mode, dpr);
-};
+}
 
 /**
  * Provides a dummy container setting and factory to initiate a setup
@@ -297,8 +301,8 @@ var platformProvider = (src, mode, dpr) => {
  *
  * @return {object} factory exploiting container information.
  */
-var containerProvider = () => {
-	const dimensions = {
+function containerProvider () {
+	var dimensions = {
 		width: 640,
 		height: 360,
 		ratio: 320 / 180,
@@ -312,12 +316,12 @@ var containerProvider = () => {
 	 * @param {domtElement | string} requestedContainer: domElement or selector to be the container
 	 * @return {object} exploiting container information.
 	 */
-	const domBasedSetup = (parentElement, requestedContainer) => {
-		const selectedContainer = requestedContainer || 'sky-crop';
+	var domBasedSetup = function (parentElement, requestedContainer) {
+		var selectedContainer = requestedContainer || 'sky-crop';
 
 		// Recursive function returning a domElement
 		// if input: container is a domElement it will be returned immediately
-		const getContainer = (currentElement, container) => {
+		var getContainer = function (currentElement, container) {
 			if (typeof container !== 'string') {
 				return container;
 			}
@@ -329,30 +333,30 @@ var containerProvider = () => {
 			return currentElement;
 		};
 
-		const element = getContainer(parentElement, selectedContainer);
+		var element = getContainer(parentElement, selectedContainer);
 
 		dimensions.width = element.clientWidth;
 		dimensions.height = element.clientHeight;
 		dimensions.ratio = element.clientWidth / element.clientHeight;
 
-		const reMeasure = () => {
+		var reMeasure = function () {
 			dimensions.width = element.clientWidth;
 			dimensions.height = element.clientHeight;
 			dimensions.ratio = dimensions.width / dimensions.height;
 		};
 
 		return {
-			element,
-			dimensions,
-			reMeasure,
+			element: element,
+			dimensions: dimensions,
+			reMeasure: reMeasure,
 		};
 	};
 
 	return {
-		dimensions,
-		domBasedSetup,
+		dimensions: dimensions,
+		domBasedSetup: domBasedSetup,
 	};
-};
+}
 
 /**
  * Provides booleans indication if and action should be startet or not
@@ -362,12 +366,12 @@ var containerProvider = () => {
  * @param {object} config: configuration object send from image based on requested setup.
  * @return {object} properties which will resolve to true if the image should be recropped
  */
-var conditionProvider = (container, image, config) => {
-	const upperLimit = dimension => Math.ceil((image[dimension] / config.dpr) + config.round);
+function conditionProvider (container, image, config) {
+	var upperLimit = function (dimension) { return Math.ceil((image[dimension] / config.dpr) + config.round); };
 
-	let imageFullyVisible = true;
+	var imageFullyVisible = true;
 
-	const restyle = () => {
+	var restyle = function () {
 		if ((container.dimensions.ratio > image.ratio) && !imageFullyVisible) {
 			imageFullyVisible = true;
 			return true;
@@ -386,18 +390,18 @@ var conditionProvider = (container, image, config) => {
 		return false;
 	};
 
-	const recrop = {
-		width: () => container.dimensions.width > upperLimit('width'),
-		height: () => container.dimensions.height > upperLimit('height'),
-		contain: () => recrop.width() && recrop.height(),
-		cover: () => recrop.width() || recrop.height(),
+	var recrop = {
+		width: function () { return container.dimensions.width > upperLimit('width'); },
+		height: function () { return container.dimensions.height > upperLimit('height'); },
+		contain: function () { return recrop.width() && recrop.height(); },
+		cover: function () { return recrop.width() || recrop.height(); },
 	};
 
 	return {
 		recrop: recrop[config.mode],
-		restyle,
+		restyle: restyle,
 	};
-};
+}
 
 /**
  * Provides a style factory based on inputs
@@ -407,10 +411,10 @@ var conditionProvider = (container, image, config) => {
  * @param {object} config: configuration object send from image based on requested setup.
  * @return {function} factory function to set the correct styles.
  */
-var styleProvider = (image, container, requestedFocal, config) => {
+function styleProvider (image, container, requestedFocal, config) {
 	// Settting fallback if requested is empty
-	const checkFocal = (inputFocal) => {
-		let isValid = !!inputFocal;
+	var checkFocal = function (inputFocal) {
+		var isValid = !!inputFocal;
 
 		/** Making sure string is correct. Syntax: 'x%,x%' (no zero prefix needed) */
 		isValid = (isValid && inputFocal.indexOf(',') !== -1);
@@ -418,51 +422,51 @@ var styleProvider = (image, container, requestedFocal, config) => {
 		isValid = (isValid && inputFocal.indexOf('%') !== inputFocal.lastIndexOf('%'));
 
 		if (!isValid && inputFocal !== undefined) {
-			console.warn(`Sky-crop: Invalid focalpoint '${inputFocal}' - focalpoint defaulted to: '50%,50%'`);
+			console.warn(("Sky-crop: Invalid focalpoint '" + inputFocal + "' - focalpoint defaulted to: '50%,50%'"));
 		}
 
 		return isValid ? inputFocal : '50%,50%';
 	};
-	const focalString = checkFocal(requestedFocal);
+	var focalString = checkFocal(requestedFocal);
 
 	// Splitting focal info into ints
-	const focal = {
+	var focal = {
 		x: Number(focalString.split(',')[0].replace('%', '')),
 		y: Number(focalString.split(',')[1].replace('%', '')),
 	};
 
 	// Objectfit & -position styles
-	const objectFitStyles = {
-		cover: () => ({
+	var objectFitStyles = {
+		cover: function () { return ({
 			objectFit: config.mode,
-			objectPosition: `left ${focal.x}% top ${focal.y}%`,
+			objectPosition: ("left " + (focal.x) + "% top " + (focal.y) + "%"),
 			height: '100%',
 			width: '100%',
-		}),
-		contain: () => ({
+		}); },
+		contain: function () { return ({
 			objectFit: config.mode,
 			objectPosition: '50% 50%',
 			height: '100%',
 			width: '100%',
-		}),
+		}); },
 	};
 
-	const styles = {
+	var styles = {
 		// If the image has a dimensions smaller than the container.
 		center: {
 			x: {
 				width: 'auto',
 				height: '100%',
-				top: `${focal.y}%`,
+				top: ((focal.y) + "%"),
 				left: '50%',
-				transform: `translate(-50%, -${focal.y}%)`,
+				transform: ("translate(-50%, -" + (focal.y) + "%)"),
 			},
 			y: {
 				width: '100%',
 				height: 'auto',
 				top: '50%',
-				left: `${focal.x}%`,
-				transform: `translate(-${focal.x}%, -50%)`,
+				left: ((focal.x) + "%"),
+				transform: ("translate(-" + (focal.x) + "%, -50%)"),
 			},
 		},
 		coverFit: {
@@ -470,16 +474,16 @@ var styleProvider = (image, container, requestedFocal, config) => {
 			x: {
 				width: '100%',
 				height: 'auto',
-				top: `${focal.y}%`,
-				left: `${focal.x}%`,
-				transform: `translate(-${focal.x}%, -${focal.y}%)`,
+				top: ((focal.y) + "%"),
+				left: ((focal.x) + "%"),
+				transform: ("translate(-" + (focal.x) + "%, -" + (focal.y) + "%)"),
 			},
 			y: {
 				width: 'auto',
 				height: '100%',
-				top: `${focal.y}%`,
-				left: `${focal.x}%`,
-				transform: `translate(-${focal.x}%, -${focal.y}%)`,
+				top: ((focal.y) + "%"),
+				left: ((focal.x) + "%"),
+				transform: ("translate(-" + (focal.x) + "%, -" + (focal.y) + "%)"),
 			},
 		},
 		containFit: {
@@ -500,28 +504,28 @@ var styleProvider = (image, container, requestedFocal, config) => {
 		},
 	};
 
-	const fitStyles = {
-		width: () => {
-			const imageFullyVisible = container.dimensions.ratio >= image.ratio;
+	var fitStyles = {
+		width: function () {
+			var imageFullyVisible = container.dimensions.ratio >= image.ratio;
 			return imageFullyVisible ? styles.coverFit.x : styles.center.y;
 		},
-		height: () => {
-			const imageFullyVisible = container.dimensions.ratio <= image.ratio;
+		height: function () {
+			var imageFullyVisible = container.dimensions.ratio <= image.ratio;
 			return imageFullyVisible ? styles.coverFit.y : styles.center.x;
 		},
-		contain: () => {
-			const containToWidth = container.dimensions.ratio <= image.ratio;
+		contain: function () {
+			var containToWidth = container.dimensions.ratio <= image.ratio;
 			return containToWidth ? styles.containFit.x : styles.containFit.y;
 		},
-		cover: () => {
-			const coverByWidth = container.dimensions.ratio <= image.ratio;
+		cover: function () {
+			var coverByWidth = container.dimensions.ratio <= image.ratio;
 			return coverByWidth ? styles.coverFit.y : styles.coverFit.x;
 		},
 	};
 
-	const autoStyles = {
-		width: () => ({ height: '100%' }),
-		height: () => ({ width: '100%' }),
+	var autoStyles = {
+		width: function () { return ({ height: '100%' }); },
+		height: function () { return ({ width: '100%' }); },
 	};
 
 	/**
@@ -529,7 +533,7 @@ var styleProvider = (image, container, requestedFocal, config) => {
 	 *
 	 * @return {object} styling object based on initial configuration
 	 */
-	return () => {
+	return function () {
 		if (config.auto) {
 			return autoStyles[config.auto]();
 		}
@@ -541,7 +545,7 @@ var styleProvider = (image, container, requestedFocal, config) => {
 
 		return fitStyles[config.mode]();
 	};
-};
+}
 
 /**
  * Provides configuration object based on requested setup and default behaviour
@@ -549,19 +553,19 @@ var styleProvider = (image, container, requestedFocal, config) => {
  * @param {object} requested: requested settings changes.
  * @return {object} object containing setup and enviromental settings.
  */
-var configProvider = (requested) => {
-	const isClient = typeof window !== 'undefined';
-	const supportedModes = ['width', 'height', 'cover', 'contain'];
-	const supportsCSS = isClient
+function configProvider (requested) {
+	var isClient = typeof window !== 'undefined';
+	var supportedModes = ['width', 'height', 'cover', 'contain'];
+	var supportsCSS = isClient
 		&& Boolean((window.CSS && window.CSS.supports) || window.supportsCSS || false);
-	const supportsObjectFit = supportsCSS
+	var supportsObjectFit = supportsCSS
 		&& window.CSS.supports('object-fit', 'cover')
 		&& window.CSS.supports('object-position', '0% 0%');
 
-	const dpr = isClient ? window.devicePixelRatio : 1;
-	const round = requested.round || 100;
-	let mode = requested.mode || 'width';
-	let auto = null;
+	var dpr = isClient ? window.devicePixelRatio : 1;
+	var round = requested.round || 100;
+	var mode = requested.mode || 'width';
+	var auto = null;
 
 	if (requested.auto === 'width') {
 		auto = 'width';
@@ -575,47 +579,47 @@ var configProvider = (requested) => {
 
 	/* Warn if defined mode is invalid and list avalible modes */
 	if (requested.mode && (supportedModes.indexOf(requested.mode) === -1)) {
-		console.warn(`Sky-crop[configProvider]: '${requested.mode}' does not exist - 'width' set as fallback. Available modes: ${supportedModes.join(' | ')}`);
+		console.warn(("Sky-crop[configProvider]: '" + (requested.mode) + "' does not exist - 'width' set as fallback. Available modes: " + (supportedModes.join(' | '))));
 	}
 
 	if (requested.auto
 		&& (requested.auto !== 'height')
 		&& (requested.auto !== 'width')) {
-		console.warn(`Sky-crop[configProvider]: ${requested.auto} is not a valid value. Use 'width' or 'height'`);
+		console.warn(("Sky-crop[configProvider]: " + (requested.auto) + " is not a valid value. Use 'width' or 'height'"));
 	}
 
 	return {
 		useObjectFit: supportsCSS && supportsObjectFit,
-		auto,
-		mode,
-		dpr,
-		round,
+		auto: auto,
+		mode: mode,
+		dpr: dpr,
+		round: round,
 	};
-};
+}
 
-var imageInstance = (requested) => {
-	const container = containerProvider();
-	let config = configProvider(requested);
-	const platform = platformProvider(requested.src, config.mode, config.dpr);
-	let cropInformation = platform.crop(container);
+function imageInstance (requested) {
+	var container = containerProvider();
+	var config = configProvider(requested);
+	var platform = platformProvider(requested.src, config.mode, config.dpr);
+	var cropInformation = platform.crop(container);
 
-	const focal = requested.focal || platform.focalPoint;
+	var focal = requested.focal || platform.focalPoint;
 
 
-	let styling = styleProvider(
+	var styling = styleProvider(
 		cropInformation.dimensions,
 		container,
 		focal,
 		config);
 
 	// The following is for rerendering on the client.
-	const domBasedSetup = (element) => {
-		const domContainer = container.domBasedSetup(element, requested.container);
+	var domBasedSetup = function (element) {
+		var domContainer = container.domBasedSetup(element, requested.container);
 		config = configProvider(requested);
 
 		cropInformation = platform.crop(domContainer);
 
-		const conditions = conditionProvider(
+		var conditions = conditionProvider(
 			domContainer,
 			cropInformation.dimensions,
 			config);
@@ -626,23 +630,23 @@ var imageInstance = (requested) => {
 			focal,
 			config);
 
-		const crop = () => {
+		var crop = function () {
 			domContainer.reMeasure();
 			cropInformation = platform.crop(domContainer);
 		};
 
-		const recalcStyles = () => styling();
+		var recalcStyles = function () { return styling(); };
 
-		const checkRestyleConditions = () => {
+		var checkRestyleConditions = function () {
 			domContainer.reMeasure();
 			return conditions.restyle();
 		};
 
 		return {
 			container: domContainer,
-			crop,
+			crop: crop,
 			dimensions: cropInformation.dimensions,
-			recalcStyles,
+			recalcStyles: recalcStyles,
 			shouldRecrop: conditions.recrop,
 			shouldRestyle: checkRestyleConditions,
 			src: cropInformation.url,
@@ -654,13 +658,13 @@ var imageInstance = (requested) => {
 	};
 
 	return {
-		shouldRecrop: () => false,
-		shouldRestyle: () => false,
+		shouldRecrop: function () { return false; },
+		shouldRestyle: function () { return false; },
 		src: cropInformation.url,
 		styling: styling(),
-		domBasedSetup,
+		domBasedSetup: domBasedSetup,
 	};
-};
+}
 
 var script = {
 	name: 'SkyCrop',
@@ -680,7 +684,7 @@ var script = {
 			default: true,
 		},
 	},
-	data() {
+	data: function data() {
 		return {
 			skyWindow: {
 				restyle: null,
@@ -693,7 +697,7 @@ var script = {
 		};
 	},
 	computed: {
-		default() {
+		default: function default$1() {
 			return {
 				src: this.src,
 				container: this.container,
@@ -705,60 +709,64 @@ var script = {
 		},
 	},
 	methods: {
-		addImage(image) {
+		addImage: function addImage(image) {
 			this.$emit('loading');
 			this.loading = true;
 			this.imageArray.push(image);
 		},
-		removeOldImages() {
+		removeOldImages: function removeOldImages() {
 			this.imageArray = this.imageArray.slice(-1);
 			this.defaultCrop = false;
 		},
-		load() {
+		load: function load() {
 			this.removeOldImages();
 			this.loading = false;
 			this.$emit('load');
 		},
-		newCrop() {
+		newCrop: function newCrop() {
 			return this.image.domBasedSetup(this.$el);
 		},
-		resizeCrop() {
+		resizeCrop: function resizeCrop() {
 			if (this.imageArray[0].shouldRecrop()) {
 				this.imageArray = this.imageArray.slice(0, 1);
 				this.addImage(this.newCrop());
 			}
 		},
-		resizeRestyle() {
-			this.imageArray.forEach((instance) => {
+		resizeRestyle: function resizeRestyle() {
+			var this$1 = this;
+
+			this.imageArray.forEach(function (instance) {
 				if (instance.shouldRestyle()) {
-					this.$set(instance, 'styling', instance.recalcStyles());
+					this$1.$set(instance, 'styling', instance.recalcStyles());
 				}
 			});
 		},
 	},
-	created() {
+	created: function created() {
 		this.$set(this, 'image', imageInstance(this.default));
 		if (this.showDefault) {
 			this.addImage(this.image);
 		}
 	},
-	mounted() {
+	mounted: function mounted() {
+		var this$1 = this;
+
 		if (this.auto === 'height') {
 			// avoid DOM height change after image load
-			const dimension = (source, search) => Number(source.substr(source.indexOf(search)).split('&')[0].split('=')[1]);
+			var dimension = function (source, search) { return Number(source.substr(source.indexOf(search)).split('&')[0].split('=')[1]); };
 
-			const width = dimension(this.src, 'width');
-			const height = dimension(this.src, 'height');
-			const ratio = width / height;
+			var width = dimension(this.src, 'width');
+			var height = dimension(this.src, 'height');
+			var ratio = width / height;
 
-			const calculatedHeight = this.$el.getBoundingClientRect().width / ratio;
+			var calculatedHeight = this.$el.getBoundingClientRect().width / ratio;
 
 			if (calculatedHeight) {
-				this.$el.style.height = `${calculatedHeight}px`;
+				this.$el.style.height = calculatedHeight + "px";
 			}
 
-			this.$nextTick(() => {
-				this.$el.style.height = null;
+			this.$nextTick(function () {
+				this$1.$el.style.height = null;
 			});
 		}
 
@@ -770,7 +778,7 @@ var script = {
 
 		this.addImage(this.newCrop());
 	},
-	beforeDestroy() {
+	beforeDestroy: function beforeDestroy() {
 		if (!this.auto) {
 			resize.off(this.resizeRestyle, false);
 		}
@@ -779,26 +787,26 @@ var script = {
 };
 
 /* script */
-            const __vue_script__ = script;
+            var __vue_script__ = script;
 /* template */
 var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['sky-crop', { 'default': _vm.defaultCrop }]},_vm._l((_vm.imageArray),function(image,index){return _c('img',{key:index,staticClass:"element",style:(image.styling),attrs:{"src":image.src,"alt":_vm.alt},on:{"load":_vm.load}})}))};
 var __vue_staticRenderFns__ = [];
 
   /* style */
-  const __vue_inject_styles__ = undefined;
+  var __vue_inject_styles__ = undefined;
   /* scoped */
-  const __vue_scope_id__ = undefined;
+  var __vue_scope_id__ = undefined;
   /* module identifier */
-  const __vue_module_identifier__ = undefined;
+  var __vue_module_identifier__ = undefined;
   /* functional template */
-  const __vue_is_functional_template__ = false;
+  var __vue_is_functional_template__ = false;
   /* component normalizer */
   function __vue_normalize__(
     template, style, script$$1,
     scope, functional, moduleIdentifier,
     createInjector, createInjectorSSR
   ) {
-    const component = (typeof script$$1 === 'function' ? script$$1.options : script$$1) || {};
+    var component = (typeof script$$1 === 'function' ? script$$1.options : script$$1) || {};
 
     // For security concerns, we use only base name in production mode.
     component.__file = "SkyCrop.vue";
@@ -808,7 +816,7 @@ var __vue_staticRenderFns__ = [];
       component.staticRenderFns = template.staticRenderFns;
       component._compiled = true;
 
-      if (functional) component.functional = true;
+      if (functional) { component.functional = true; }
     }
 
     component._scopeId = scope;
@@ -832,7 +840,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-const defaults = {
+var defaults = {
 	registerComponents: true,
 };
 
@@ -841,7 +849,8 @@ function install(Vue, options) {
 		return;
 	}
 
-	const { registerComponents } = Object.assign({}, defaults, options);
+	var ref = Object.assign({}, defaults, options);
+	var registerComponents = ref.registerComponents;
 
 	if (registerComponents) {
 		Vue.component(SkyCrop.name, SkyCrop);
