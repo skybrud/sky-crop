@@ -74,7 +74,7 @@ var script = {
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"sky-crop"},[_vm._ssrNode("<img"+(_vm._ssrAttr("src",_vm.src))+(_vm._ssrAttr("data-object-fit",_vm.mode))+" class=\"sky-crop__image\""+(_vm._ssrStyle(null,_vm.style, null))+">")])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"sky-crop"},[_vm._ssrNode("<img"+(_vm._ssrAttr("src",_vm.cropUrl))+" class=\"sky-crop__image\">")])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -82,7 +82,7 @@ var __vue_staticRenderFns__ = [];
   /* scoped */
   var __vue_scope_id__ = undefined;
   /* module identifier */
-  var __vue_module_identifier__ = "data-v-38b89b40";
+  var __vue_module_identifier__ = "data-v-714a032c";
   /* functional template */
   var __vue_is_functional_template__ = false;
   /* component normalizer */

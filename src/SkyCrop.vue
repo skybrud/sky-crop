@@ -2,9 +2,7 @@
 	<div class="sky-crop">
 		<img
 			class="sky-crop__image"
-			:src="src"
-			:data-object-fit="mode"
-			:style="style"
+			:src="cropUrl"
 		/>
 	</div>
 </template>

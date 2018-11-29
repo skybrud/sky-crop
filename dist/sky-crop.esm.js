@@ -70,7 +70,7 @@ var script = {
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"sky-crop"},[_c('img',{staticClass:"sky-crop__image",style:(_vm.style),attrs:{"src":_vm.src,"data-object-fit":_vm.mode}})])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"sky-crop"},[_c('img',{staticClass:"sky-crop__image",attrs:{"src":_vm.cropUrl}})])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
