@@ -1,17 +1,17 @@
 .sky-crop {
 	position: relative;
 	overflow: hidden;
+}
 
-	.element {
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		margin: 0;
-		will-change: transform;
+.sky-crop__image {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	will-change: transform;
 
-		&:first-of-type {
-			position: relative;
-		}
+	&:first-of-type {
+		position: relative;
 	}
 }
