@@ -30,6 +30,7 @@ export default {
 		return {
 			cropArray: [],
 			upperLimit: null,
+			loading: false,
 			config: Object.assign({},
 				defaultOptions,
 				this.options,
@@ -56,6 +57,11 @@ export default {
 			}, []);
 		},
 	},
+	watch: {
+		loading() {
+			this.$emit('loading', this.loading);
+		},
+	},
 	mounted() {
 		const container = this.$el.getBoundingClientRect();
 		this.initiateCrop(container);
@@ -69,6 +75,8 @@ export default {
 		initiateCrop(container) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
 			if (!!(container.width && container.height)) {
+				this.loading = true;
+
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
@@ -99,6 +107,11 @@ export default {
 			this.cropArray = this.cropArray.slice(-1);
 
 			objectFitImages();
+
+			this.loading = false;
+
+			// Loaded event emits the loaded src url, just in case.
+			this.$emit('loaded', this.cropArray[0]);
 		},
 		umbraco(src, container, mode, rounding) {
 			const [path, queryPart] = src.split('?');

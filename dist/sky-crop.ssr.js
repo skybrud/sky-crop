@@ -90,6 +90,7 @@ var script = {
 		return {
 			cropArray: [],
 			upperLimit: null,
+			loading: false,
 			config: Object.assign({},
 				defaultOptions,
 				this.options
@@ -116,6 +117,11 @@ var script = {
 			}, []);
 		},
 	},
+	watch: {
+		loading: function loading() {
+			this.$emit('loading', this.loading);
+		},
+	},
 	mounted: function mounted() {
 		var container = this.$el.getBoundingClientRect();
 		this.initiateCrop(container);
@@ -129,6 +135,8 @@ var script = {
 		initiateCrop: function initiateCrop(container) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
 			if (!!(container.width && container.height)) {
+				this.loading = true;
+
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
@@ -161,6 +169,11 @@ var script = {
 			this.cropArray = this.cropArray.slice(-1);
 
 			objectFitImages();
+
+			this.loading = false;
+
+			// Loaded event emits the loaded src url, just in case.
+			this.$emit('loaded', this.cropArray[0]);
 		},
 		umbraco: function umbraco(src, container, mode, rounding) {
 			var ref = src.split('?');
