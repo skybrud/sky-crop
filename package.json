@@ -16,7 +16,8 @@
 		"url": "https://github.com/skybrud/sky-crop.git"
 	},
 	"dependencies": {
-		"lodash.throttle": "^4.1.1"
+		"lodash.throttle": "^4.1.1",
+		"object-fit-images": "^3.2.4"
 	},
 	"devDependencies": {
 		"sky-build-setup": "https://github.com/skybrud/sky-build-setup.git"

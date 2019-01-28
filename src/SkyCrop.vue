@@ -1,7 +1,8 @@
 <template>
-	<div class="sky-crop">
+	<div :class="rootClasses">
 		<img
-			class="sky-crop__image"
+			ref="image"
+			:class="imageClasses"
 			:src="cropUrl"
 		/>
 	</div>
