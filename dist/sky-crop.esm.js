@@ -121,6 +121,7 @@ var script = {
 	},
 	methods: {
 		initiateCrop: function initiateCrop(container) {
+			// Only initiate when container has dimensions in order to avoid full image fetch;
 			if (container.width && container.height) {
 				this.cropArray.push(this.umbraco(
 					this.src,
