@@ -2,8 +2,11 @@
 	<div :class="rootClasses">
 		<img
 			ref="image"
+			v-for="(url, index) in cropUrls"
+			:key="index"
 			:class="imageClasses"
-			:src="cropUrl"
+			:src="url"
+			@load="loaded"
 		/>
 	</div>
 </template>

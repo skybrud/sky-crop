@@ -1,4 +1,5 @@
 import objectFitImages from 'object-fit-images';
+import resize from './helpers/resize';
 
 const defaultOptions = {
 	upscale: false,
@@ -21,13 +22,14 @@ export default {
 		},
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
-			type: Array,
+			type: Object,
 			default: () => ({}),
 		},
 	},
 	data() {
 		return {
-			cropUrl: null,
+			cropUrls: [],
+			upperLimit: null,
 			config: Object.assign({},
 				defaultOptions,
 				this.options,
@@ -55,24 +57,46 @@ export default {
 		},
 	},
 	mounted() {
-		this.cropUrl = this.umbraco(
+		this.cropUrls.push(this.umbraco(
 			this.src,
 			this.$el.getBoundingClientRect(),
 			this.mode,
 			this.round,
-		);
+		));
 
 		objectFitImages();
 
-		resize.on(this.resizeCrop);
+		resize.on(this.resizeHandler);
 	},
 	beforeDestroy() {
-		if (!this.auto) {
-			resize.off(this.resizeRestyle, false);
-		}
 		resize.off(this.resizeCrop);
 	},
 	methods: {
+		resizeHandler() {
+			const container = this.$el.getBoundingClientRect();
+
+			let initCrop = false;
+
+			Object.keys(this.upperLimit).forEach((dimension) => {
+				if (initCrop || container[dimension] > this.upperLimit[dimension]) {
+					initCrop = true;
+				}
+			});
+
+			if (initCrop) {
+				const newUrl = this.umbraco(
+					this.src,
+					container,
+					this.mode,
+					this.round,
+				);
+
+				this.cropUrls.push(newUrl);
+			}
+		},
+		loaded() {
+			this.cropUrls = this.cropUrls.slice(-1);
+		},
 		umbraco(src, container, mode, rounding) {
 			const [path, queryPart] = src.split('?');
 
@@ -110,6 +134,9 @@ export default {
 				rounding,
 			);
 
+			/* Add upper limit before new crop*/
+			this.$set(this, 'upperLimit', cropDimensions);
+
 			/* Generate query for imageprocessor */
 			const cropQuery = [
 				...this.objectToStringArray(cropDimensions),
@@ -133,9 +160,28 @@ export default {
 			const cacheRound = value => Math.ceil((value * dpr) / rounding) * rounding;
 
 			const cropMap = {
-				cover: {
-					width: cacheRound(target.width),
-				},
+				cover: (function coverCalc() {
+					const sourceRatio = source.width / source.height;
+					const targetRatio = target.width / target.height;
+
+					let base = null;
+
+					if (sourceRatio > targetRatio) {
+						base = cacheRound(target.width);
+
+						return {
+							width: base,
+							heightratio: target.height / target.width,
+						};
+					}
+
+					base = cacheRound(target.height);
+
+					return {
+						height: base,
+						widthratio: target.width / target.height,
+					};
+				}()),
 				contain: (function containCalc() {
 					const sourceRatio = source.width / source.height;
 					let base = null;

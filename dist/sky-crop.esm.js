@@ -1,3 +1,64 @@
+import _throttle from 'lodash.throttle';
+import objectFitImages from 'object-fit-images';
+
+var _callbacks = [];
+var _throttledCallbacks = [];
+var _listenerOn = false;
+
+var runCallbacks = function () {
+	for (var i = _callbacks.length - 1; i >= 0; i--) {
+		_callbacks[i]();
+	}
+};
+
+var runThrottledCallbacks = _throttle(function () {
+	for (var i = _throttledCallbacks.length - 1; i >= 0; i--) {
+		_throttledCallbacks[i]();
+	}
+}, 300);
+
+function onResize() {
+	runCallbacks();
+	runThrottledCallbacks();
+}
+
+function on(fn, throttle) {
+	if ( throttle === void 0 ) throttle = true;
+
+	var array = (throttle) ? _throttledCallbacks : _callbacks;
+	array.push(fn);
+	if (typeof window !== 'undefined' && !_listenerOn) {
+		window.addEventListener('resize', onResize);
+		_listenerOn = true;
+	}
+}
+
+function off(fn, throttle) {
+	if ( throttle === void 0 ) throttle = true;
+
+	var array = (throttle) ? _throttledCallbacks : _callbacks;
+	var index = array.indexOf(fn);
+	if (index > -1) {
+		array.splice(index, 1);
+	}
+	if (typeof window !== 'undefined'
+		&& _listenerOn
+		&& !_callbacks.length
+		&& !_throttledCallbacks.length) {
+		window.removeEventListener('resize', onResize);
+		_listenerOn = false;
+	}
+}
+
+var resize = {
+	on: on,
+	off: off,
+};
+
+var defaultOptions = {
+	upscale: false,
+};
+
 var script = {
 	name: 'SkyCrop',
 	props: {
@@ -5,53 +66,208 @@ var script = {
 			type: String,
 			required: true,
 		},
-		mode: String,
+		mode: {
+			type: String,
+			default: '',
+		},
+		round: {
+			type: Number,
+			default: 100,
+		},
+		options: {
+			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
+			type: Object,
+			default: function () { return ({}); },
+		},
 	},
 	data: function data() {
 		return {
-			cropUrl: null,
+			cropUrls: [],
+			upperLimit: null,
+			config: Object.assign({},
+				defaultOptions,
+				this.options
+			),
 		};
 	},
+	computed: {
+		rootClasses: function rootClasses() {
+			return [
+				'sky-crop',
+				("sky-crop--" + (this.mode)) ];
+		},
+		imageClasses: function imageClasses() {
+			return [
+				'sky-crop__image',
+				("sky-crop__image--" + (this.mode)) ];
+		},
+		imageAlterations: function imageAlterations() {
+			var this$1 = this;
+
+			return Object.keys(this.config).reduce(function (acc, cur) {
+				acc.push((cur + "=" + (this$1.config[cur])));
+				return acc;
+			}, []);
+		},
+	},
 	mounted: function mounted() {
-		this.cropUrl = this.umbraco(this.src, this.$el.getBoundingClientRect());
+		this.cropUrls.push(this.umbraco(
+			this.src,
+			this.$el.getBoundingClientRect(),
+			this.mode,
+			this.round
+		));
+
+		objectFitImages();
+
+		resize.on(this.resizeHandler);
+	},
+	beforeDestroy: function beforeDestroy() {
+		resize.off(this.resizeCrop);
 	},
 	methods: {
-		umbraco: function umbraco(src, container) {
-			var isWidthOrHeight = function (string) { return (string.indexOf('width') !== -1) || (string.indexOf('height') !== -1); };
-			var notWidthOrHeight = function (string) { return (string.indexOf('width') === -1) && (string.indexOf('height') === -1); };
+		resizeHandler: function resizeHandler() {
+			var this$1 = this;
+
+			var container = this.$el.getBoundingClientRect();
+
+			var initCrop = false;
+
+			Object.keys(this.upperLimit).forEach(function (dimension) {
+				if (initCrop || container[dimension] > this$1.upperLimit[dimension]) {
+					initCrop = true;
+				}
+			});
+
+			if (initCrop) {
+				var newUrl = this.umbraco(
+					this.src,
+					container,
+					this.mode,
+					this.round
+				);
+
+				this.cropUrls.push(newUrl);
+			}
+		},
+		loaded: function loaded() {
+			this.cropUrls = this.cropUrls.slice(-1);
+		},
+		umbraco: function umbraco(src, container, mode, rounding) {
 			var ref = src.split('?');
 			var path = ref[0];
-			var queryString = ref[1];
-			var queryParts = queryString.split('&');
+			var queryPart = ref[1];
 
-			var sourceDimensions = queryParts
-				.filter(isWidthOrHeight)
+			function partContains(part) {
+				/**
+				 * "part" is an index of the array calling filter.
+				 * this, is the second variable in the filter function
+				 */
+				return this.indexOf(part.split('=')[0]) !== -1;
+			}
+
+			/** START: Grab sourcedimensions */
+			var sourceDimensions = queryPart
+				.split('&')
+				.filter(partContains, ['width', 'height'])
 				.reduce(function (acc, cur) {
 					var ref = cur.split('=');
-					var prop = ref[0];
+					var key = ref[0];
 					var value = ref[1];
-
-					acc[prop] = (value * 1);
+					acc[key] = value * 1;
 
 					return acc;
 				}, {});
+			/** END: Grab sourcedimensions */
+
+			/** START: grab immutable parts */
+			var immutables = ['anchor', 'center', 'format', 'rnd'];
+			var immutablesArray = queryPart
+				.split('&')
+				.filter(partContains, immutables);
+			/** END: grab immutable parts */
 
 			var cropDimensions = this.crop(
 				sourceDimensions,
-				container
+				container,
+				mode,
+				rounding
 			);
 
-			var cropQuery = queryParts.filter(notWidthOrHeight).concat( this.objectToStringArray(cropDimensions) ).join('&');
+			/* Add upper limit before new crop*/
+			this.$set(this, 'upperLimit', cropDimensions);
+
+			/* Generate query for imageprocessor */
+			var cropQuery = this.objectToStringArray(cropDimensions).concat( [this.cropMode(mode)],
+				immutablesArray,
+				[this.imageAlterations] ).join('&');
 
 			return (path + "?" + cropQuery);
 		},
-		crop: function crop(source, target) {
-			var ratio = target.width / target.height;
-
-			return {
-				width: Math.ceil(target.width),
-				height: Math.ceil(target.width / ratio),
+		cropMode: function cropMode(mode) {
+			var modeMap = {
+				cover: 'mode=crop',
+				contain: 'mode=max',
 			};
+
+			return modeMap[mode] || '';
+		},
+		crop: function crop(source, target, mode, rounding) {
+			var dpr = window.devicePixelRatio;
+			var cacheRound = function (value) { return Math.ceil((value * dpr) / rounding) * rounding; };
+
+			var cropMap = {
+				cover: (function coverCalc() {
+					var sourceRatio = source.width / source.height;
+					var targetRatio = target.width / target.height;
+
+					var base = null;
+
+					if (sourceRatio > targetRatio) {
+						base = cacheRound(target.width);
+
+						return {
+							width: base,
+							heightratio: target.height / target.width,
+						};
+					}
+
+					base = cacheRound(target.height);
+
+					return {
+						height: base,
+						widthratio: target.width / target.height,
+					};
+				}()),
+				contain: (function containCalc() {
+					var sourceRatio = source.width / source.height;
+					var base = null;
+
+					if (sourceRatio > (target.width / target.height)) {
+						base = cacheRound(target.width);
+
+						return {
+							width: base,
+							height: Math.round(base / sourceRatio),
+						};
+					}
+
+					base = cacheRound(target.height);
+
+					return {
+						height: cacheRound(target.height),
+						width: Math.round(base * sourceRatio),
+					};
+				}()),
+				width: {
+					width: cacheRound(target.width),
+				},
+				height: {
+					height: cacheRound(target.height),
+				},
+			};
+
+			return cropMap[mode] || cropMap.width;
 		},
 		objectToStringArray: function objectToStringArray(object, delimiter) {
 			if ( delimiter === void 0 ) delimiter = '=';
@@ -63,14 +279,14 @@ var script = {
 
 					return acc;
 				}, []);
-		}
+		},
 	},
 };
 
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"sky-crop"},[_c('img',{staticClass:"sky-crop__image",attrs:{"src":_vm.cropUrl}})])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},_vm._l((_vm.cropUrls),function(url,index){return _c('img',{key:index,ref:"image",refInFor:true,class:_vm.imageClasses,attrs:{"src":url},on:{"load":_vm.loaded}})}))};
 var __vue_staticRenderFns__ = [];
 
   /* style */
