@@ -68,15 +68,13 @@ export default {
 	methods: {
 		initiateCrop(container) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
-			if (container.width && container.height) {
+			if (!!(container.width && container.height)) {
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
 					this.mode,
 					this.round
 				));
-
-				objectFitImages();
 			} else {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
 			}
@@ -99,6 +97,8 @@ export default {
 		loaded() {
 			// Clean old crop urls from array
 			this.cropArray = this.cropArray.slice(-1);
+
+			objectFitImages();
 		},
 		umbraco(src, container, mode, rounding) {
 			const [path, queryPart] = src.split('?');

@@ -2,7 +2,7 @@
 	<div :class="rootClasses">
 		<img
 			ref="image"
-			v-for="(url, index) in cropUrls"
+			v-for="(url, index) in cropArray"
 			:key="index"
 			:class="imageClasses"
 			:src="url"

@@ -128,15 +128,13 @@ var script = {
 	methods: {
 		initiateCrop: function initiateCrop(container) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
-			if (container.width && container.height) {
+			if (!!(container.width && container.height)) {
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
 					this.mode,
 					this.round
 				));
-
-				objectFitImages();
 			} else {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
 			}
@@ -161,6 +159,8 @@ var script = {
 		loaded: function loaded() {
 			// Clean old crop urls from array
 			this.cropArray = this.cropArray.slice(-1);
+
+			objectFitImages();
 		},
 		umbraco: function umbraco(src, container, mode, rounding) {
 			var ref = src.split('?');
@@ -295,7 +295,7 @@ var script = {
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},[_vm._ssrNode((_vm._ssrList((_vm.cropUrls),function(url,index){return ("<img"+(_vm._ssrAttr("src",url))+(_vm._ssrClass(null,_vm.imageClasses))+">")})))])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},[_vm._ssrNode((_vm._ssrList((_vm.cropArray),function(url,index){return ("<img"+(_vm._ssrAttr("src",url))+(_vm._ssrClass(null,_vm.imageClasses))+">")})))])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -303,7 +303,7 @@ var __vue_staticRenderFns__ = [];
   /* scoped */
   var __vue_scope_id__ = undefined;
   /* module identifier */
-  var __vue_module_identifier__ = "data-v-2d226fe2";
+  var __vue_module_identifier__ = "data-v-48512fe0";
   /* functional template */
   var __vue_is_functional_template__ = false;
   /* component normalizer */
