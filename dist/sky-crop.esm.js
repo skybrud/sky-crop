@@ -82,7 +82,7 @@ var script = {
 	},
 	data: function data() {
 		return {
-			cropUrls: [],
+			cropArray: [],
 			upperLimit: null,
 			config: Object.assign({},
 				defaultOptions,
@@ -111,14 +111,8 @@ var script = {
 		},
 	},
 	mounted: function mounted() {
-		this.cropUrls.push(this.umbraco(
-			this.src,
-			this.$el.getBoundingClientRect(),
-			this.mode,
-			this.round
-		));
-
-		objectFitImages();
+		var container = this.$el.getBoundingClientRect();
+		this.initiateCrop(container);
 
 		resize.on(this.resizeHandler);
 	},
@@ -126,6 +120,20 @@ var script = {
 		resize.off(this.resizeCrop);
 	},
 	methods: {
+		initiateCrop: function initiateCrop(container) {
+			if (container.width && container.height) {
+				this.cropArray.push(this.umbraco(
+					this.src,
+					container,
+					this.mode,
+					this.round
+				));
+
+				objectFitImages();
+			} else {
+				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
+			}
+		},
 		resizeHandler: function resizeHandler() {
 			var this$1 = this;
 
@@ -140,18 +148,12 @@ var script = {
 			});
 
 			if (initCrop) {
-				var newUrl = this.umbraco(
-					this.src,
-					container,
-					this.mode,
-					this.round
-				);
-
-				this.cropUrls.push(newUrl);
+				this.initiateCrop(container);
 			}
 		},
 		loaded: function loaded() {
-			this.cropUrls = this.cropUrls.slice(-1);
+			// Clean old crop urls from array
+			this.cropArray = this.cropArray.slice(-1);
 		},
 		umbraco: function umbraco(src, container, mode, rounding) {
 			var ref = src.split('?');

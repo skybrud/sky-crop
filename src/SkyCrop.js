@@ -28,7 +28,7 @@ export default {
 	},
 	data() {
 		return {
-			cropUrls: [],
+			cropArray: [],
 			upperLimit: null,
 			config: Object.assign({},
 				defaultOptions,
@@ -57,14 +57,8 @@ export default {
 		},
 	},
 	mounted() {
-		this.cropUrls.push(this.umbraco(
-			this.src,
-			this.$el.getBoundingClientRect(),
-			this.mode,
-			this.round,
-		));
-
-		objectFitImages();
+		const container = this.$el.getBoundingClientRect();
+		this.initiateCrop(container);
 
 		resize.on(this.resizeHandler);
 	},
@@ -72,6 +66,20 @@ export default {
 		resize.off(this.resizeCrop);
 	},
 	methods: {
+		initiateCrop(container) {
+			if (container.width && container.height) {
+				this.cropArray.push(this.umbraco(
+					this.src,
+					container,
+					this.mode,
+					this.round
+				));
+
+				objectFitImages();
+			} else {
+				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
+			}
+		},
 		resizeHandler() {
 			const container = this.$el.getBoundingClientRect();
 
@@ -84,18 +92,12 @@ export default {
 			});
 
 			if (initCrop) {
-				const newUrl = this.umbraco(
-					this.src,
-					container,
-					this.mode,
-					this.round,
-				);
-
-				this.cropUrls.push(newUrl);
+				this.initiateCrop(container);
 			}
 		},
 		loaded() {
-			this.cropUrls = this.cropUrls.slice(-1);
+			// Clean old crop urls from array
+			this.cropArray = this.cropArray.slice(-1);
 		},
 		umbraco(src, container, mode, rounding) {
 			const [path, queryPart] = src.split('?');
