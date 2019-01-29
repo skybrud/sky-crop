@@ -222,7 +222,7 @@ var script = {
 			/* Generate query for imageprocessor */
 			var cropQuery = this.objectToStringArray(cropDimensions).concat( [this.cropMode(mode)],
 				immutablesArray,
-				[this.imageAlterations] ).join('&');
+				this.imageAlterations ).join('&');
 
 			return (path + "?" + cropQuery);
 		},

@@ -158,7 +158,7 @@ export default {
 				...this.objectToStringArray(cropDimensions),
 				this.cropMode(mode),
 				...immutablesArray,
-				this.imageAlterations,
+				...this.imageAlterations,
 			].join('&');
 
 			return `${path}?${cropQuery}`;
