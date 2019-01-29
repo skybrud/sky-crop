@@ -89,7 +89,7 @@ var script = {
 	data: function data() {
 		return {
 			cropArray: [],
-			upperLimit: null,
+			upperLimit: {},
 			loading: false,
 			config: Object.assign({},
 				defaultOptions,
@@ -134,7 +134,7 @@ var script = {
 	methods: {
 		initiateCrop: function initiateCrop(container) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
-			if (!!(container.width && container.height)) {
+			if (!!(container.width || container.height)) {
 				this.loading = true;
 
 				this.cropArray.push(this.umbraco(
