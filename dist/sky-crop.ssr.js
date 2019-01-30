@@ -65,6 +65,14 @@ var defaultOptions = {
 	upscale: false,
 };
 
+var webPsupport = (function() {
+	var webP = new Image();
+	webP.onload = WebP.onerror = function () {
+	  callback(webP.height == 2);
+	};
+	webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+});
+
 var script = {
 	name: 'SkyCrop',
 	props: {
@@ -226,7 +234,8 @@ var script = {
 			/* Generate query for imageprocessor */
 			var cropQuery = this.objectToStringArray(cropDimensions).concat( [this.cropMode(mode)],
 				immutablesArray,
-				this.imageAlterations ).join('&');
+				this.imageAlterations,
+				[this.isWebpSupported && 'format=webp'] ).join('&');
 
 			return (path + "?" + cropQuery);
 		},
@@ -237,6 +246,9 @@ var script = {
 			};
 
 			return modeMap[mode] || '';
+		},
+		isWebpSupported: function isWebpSupported() {
+			return webPsupport;
 		},
 		crop: function crop(source, target, mode, rounding) {
 			var dpr = window.devicePixelRatio;
