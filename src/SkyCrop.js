@@ -63,13 +63,15 @@ export default {
 		},
 	},
 	mounted() {
-		const container = this.$el.getBoundingClientRect();
-		this.initiateCrop(container);
+		// Force initiation to be further back in que
+		setTimeout(() => {
+			this.initiateCrop(this.$el.getBoundingClientRect());
+		}, 0);
 
 		resize.on(this.resizeHandler);
 	},
 	beforeDestroy() {
-		resize.off(this.resizeCrop);
+		resize.off(this.resizeHandler);
 	},
 	methods: {
 		initiateCrop(container) {

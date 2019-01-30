@@ -117,13 +117,17 @@ var script = {
 		},
 	},
 	mounted: function mounted() {
-		var container = this.$el.getBoundingClientRect();
-		this.initiateCrop(container);
+		var this$1 = this;
+
+		// Force initiation to be further back in que
+		setTimeout(function () {
+			this$1.initiateCrop(this$1.$el.getBoundingClientRect());
+		}, 0);
 
 		resize.on(this.resizeHandler);
 	},
 	beforeDestroy: function beforeDestroy() {
-		resize.off(this.resizeCrop);
+		resize.off(this.resizeHandler);
 	},
 	methods: {
 		initiateCrop: function initiateCrop(container) {
