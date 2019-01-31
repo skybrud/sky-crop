@@ -67,6 +67,8 @@ var webPsupport = (function() {
 	webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
 });
 
+var optionsBlacklist = 'anchor,center,format,mode,rnd';
+
 var script = {
 	name: 'SkyCrop',
 	props: {
@@ -114,7 +116,12 @@ var script = {
 			var this$1 = this;
 
 			return Object.keys(this.config).reduce(function (acc, cur) {
-				acc.push((cur + "=" + (this$1.config[cur])));
+				if (optionsBlacklist.indexOf(cur) === -1) {
+					acc.push((cur + "=" + (this$1.config[cur])));
+				} else {
+					console.log('[SkyCrop]: The selected option property is set as immutable');
+				}
+
 				return acc;
 			}, []);
 		},
