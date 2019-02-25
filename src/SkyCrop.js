@@ -79,9 +79,7 @@ export default {
 	},
 	mounted() {
 		// Force initiation to be further back in que
-		setTimeout(() => {
-			this.initiateCrop(this.$el.getBoundingClientRect());
-		}, 0);
+		this.initiateCrop(this.$el.getBoundingClientRect());
 
 		resize.on(this.resizeHandler);
 	},
@@ -89,7 +87,7 @@ export default {
 		resize.off(this.resizeHandler);
 	},
 	methods: {
-		initiateCrop(container) {
+		initiateCrop(container, count = 0) {
 			// Only initiate when container has dimensions in order to avoid full image fetch;
 			if (!!(container.width || container.height)) {
 				this.loading = true;
@@ -100,8 +98,12 @@ export default {
 					this.mode,
 					this.round
 				));
-			} else {
+			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
+			} else {
+				setTimeout(function () {
+					this.initiateCrop(this.$el.getBoundingClientRect(), ++count);
+				}, 1000);
 			}
 		},
 		resizeHandler() {

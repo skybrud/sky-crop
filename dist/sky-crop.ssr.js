@@ -138,12 +138,8 @@ var script = {
 		},
 	},
 	mounted: function mounted() {
-		var this$1 = this;
-
 		// Force initiation to be further back in que
-		setTimeout(function () {
-			this$1.initiateCrop(this$1.$el.getBoundingClientRect());
-		}, 0);
+		this.initiateCrop(this.$el.getBoundingClientRect());
 
 		resize.on(this.resizeHandler);
 	},
@@ -151,7 +147,9 @@ var script = {
 		resize.off(this.resizeHandler);
 	},
 	methods: {
-		initiateCrop: function initiateCrop(container) {
+		initiateCrop: function initiateCrop(container, count) {
+			if ( count === void 0 ) count = 0;
+
 			// Only initiate when container has dimensions in order to avoid full image fetch;
 			if (!!(container.width || container.height)) {
 				this.loading = true;
@@ -162,8 +160,12 @@ var script = {
 					this.mode,
 					this.round
 				));
-			} else {
+			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
+			} else {
+				setTimeout(function () {
+					this.initiateCrop(this.$el.getBoundingClientRect(), ++count);
+				}, 1000);
 			}
 		},
 		resizeHandler: function resizeHandler() {
