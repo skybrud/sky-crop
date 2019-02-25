@@ -148,6 +148,7 @@ var script = {
 	},
 	methods: {
 		initiateCrop: function initiateCrop(container, count) {
+			var this$1 = this;
 			if ( count === void 0 ) count = 0;
 
 			// Only initiate when container has dimensions in order to avoid full image fetch;
@@ -164,7 +165,7 @@ var script = {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
 			} else {
 				setTimeout(function () {
-					this.initiateCrop(this.$el.getBoundingClientRect(), ++count);
+					this$1.initiateCrop(this$1.$el.getBoundingClientRect(), ++count);
 				}, 1000);
 			}
 		},

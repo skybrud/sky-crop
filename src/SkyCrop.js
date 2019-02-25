@@ -101,7 +101,7 @@ export default {
 			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
 			} else {
-				setTimeout(function () {
+				setTimeout(() => {
 					this.initiateCrop(this.$el.getBoundingClientRect(), ++count);
 				}, 1000);
 			}
