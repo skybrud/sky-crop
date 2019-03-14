@@ -30,6 +30,7 @@ export default {
 			type: Number,
 			default: 100,
 		},
+		alt: String,
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
 			type: Object,

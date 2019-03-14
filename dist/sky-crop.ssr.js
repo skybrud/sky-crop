@@ -90,6 +90,7 @@ var script = {
 			type: Number,
 			default: 100,
 		},
+		alt: String,
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
 			type: Object,
@@ -334,7 +335,7 @@ var script = {
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},[_vm._ssrNode((_vm._ssrList((_vm.cropArray),function(url,index){return ("<img"+(_vm._ssrAttr("src",url))+(_vm._ssrClass(null,_vm.imageClasses))+">")})))])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},[_vm._ssrNode((_vm._ssrList((_vm.cropArray),function(url,index){return ("<img"+(_vm._ssrAttr("src",url))+(_vm._ssrAttr("alt",_vm.alt))+(_vm._ssrClass(null,_vm.imageClasses))+">")})))])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -342,7 +343,7 @@ var __vue_staticRenderFns__ = [];
   /* scoped */
   var __vue_scope_id__ = undefined;
   /* module identifier */
-  var __vue_module_identifier__ = "data-v-48512fe0";
+  var __vue_module_identifier__ = "data-v-1bbff808";
   /* functional template */
   var __vue_is_functional_template__ = false;
   /* component normalizer */

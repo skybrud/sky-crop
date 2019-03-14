@@ -5,6 +5,8 @@
 Only requirement is that the original size of the image is included in the url parameters.
 - ImageProcessor/Umbraco urls - eg. `[imagePath]?anchor=center&height=600&width=1000`
 
+
+-----
 ## Installation
 ```bash
 npm install sky-crop
@@ -14,6 +16,7 @@ or
 yarn add sky-crop
 ```
 
+-----
 ## Usage
 Begin by importing and installing the SkyCrop Vue plugin:
 ```js
@@ -42,11 +45,13 @@ Advanced example:
   :options="{ upscale: false }"
 />
 ```
+
 ### Available attributes (optional):
 Read as *`attributeName="defaultValue"` [supported types]*
 * `mode="width"` [String] : 'width', 'height', 'cover', 'contain'
 * `:round="100"` [Number]
 * `:options="{ upscale: false }"`
+* `alt="alternative text"` [String]
 
 
 ### mode
@@ -76,8 +81,16 @@ Best result will be given if the container has width and height set in css.
 
 #### round
 Indication of how often you would like a recrop of your image.
+
 **Case:** image is loaded and starts with cropped dimensions at 350x350. At `round="100"` should the image be stretch to more than `400` in width and/or `400` in height, a recrop will be initiated.
 
+#### options
+A hook for using all available methods provided by imageprocessor - for a full reference see this link: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
+
+#### alt
+Native `<img />` attribute, great for a11y.
+
+-------
 ## Events:
 The SkyCrop component emits two events:
 * `loaded` - when a cropped image finishes loading, the emitted data it the loaded src url.
@@ -96,5 +109,6 @@ Example:
 />
 ```
 
-# Credits
+-----
+## Credits
 This module is made by the Frontenders at [skybrud.dk](http://www.skybrud.dk/). Feel free to use it in any way you want. Feedback, questions and bugreports should be posted as issues. Pull-requests appreciated!
