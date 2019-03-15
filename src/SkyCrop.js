@@ -24,7 +24,7 @@ export default {
 		},
 		mode: {
 			type: String,
-			default: '',
+			default: 'width',
 		},
 		round: {
 			type: Number,
