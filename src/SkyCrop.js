@@ -5,14 +5,6 @@ const defaultOptions = {
 	upscale: false,
 };
 
-const webPsupport = (function() {
-	const webP = new Image();
-	webP.onload = WebP.onerror = function () {
-	  callback(webP.height == 2);
-	};
-	webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
-});
-
 const optionsBlacklist = 'anchor,center,format,mode,rnd';
 
 export default {
@@ -179,7 +171,7 @@ export default {
 				this.cropMode(mode),
 				...immutablesArray,
 				...this.imageAlterations,
-				this.isWebpSupported && 'format=webp',
+				this.isWebpSupported() && 'format=webp',
 			].join('&');
 
 			return `${path}?${cropQuery}`;
@@ -193,7 +185,10 @@ export default {
 			return modeMap[mode] || '';
 		},
 		isWebpSupported() {
-			return webPsupport;
+			const webpBrowsers = ['Chrome', 'Firefox'];
+			const userAgent = navigator.userAgent;
+
+			return !!webpBrowsers.find(browser => (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1));
 		},
 		crop(source, target, mode, rounding) {
 			const dpr = window.devicePixelRatio;
