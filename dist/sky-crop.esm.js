@@ -123,6 +123,13 @@ var script = {
 				return acc;
 			}, []);
 		},
+		settings: function settings() {
+			return {
+				dpr: this.dpr,
+				mode: this.mode,
+				round: this.round,
+			};
+		},
 	},
 	watch: {
 		loading: function loading() {

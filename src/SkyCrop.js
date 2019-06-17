@@ -69,6 +69,13 @@ export default {
 				return acc;
 			}, []);
 		},
+		settings() {
+			return {
+				dpr: this.dpr,
+				mode: this.mode,
+				round: this.round,
+			};
+		},
 	},
 	watch: {
 		loading() {
