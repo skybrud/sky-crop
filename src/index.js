@@ -23,12 +23,7 @@ export default function install(Vue, options) {
 		Vue.component(SkyCrop.name, Object.assign({}, SkyCrop), {
 			computed: {
 				settings() {
-					console.log(this.dpr);
-					return Object.assign({}, {
-						dpr: this.dpr || cropSettings.dpr,
-						mode: this.mode || cropSettings.mode,
-						round: this.round || cropSettings.round,
-					})
+					return Object.assign({}, cropSettings, this.localSettings);
 				},
 			}
 		});
