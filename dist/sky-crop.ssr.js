@@ -402,7 +402,7 @@ var __vue_staticRenderFns__ = [];
 
 var defaults = {
 	registerComponents: true,
-	cropSettings: {
+	defaultSettings: {
 		dpr: 0,
 		mode: 'width',
 		round: 100,
@@ -416,17 +416,21 @@ function install(Vue, options) {
 
 	var ref = Object.assign({}, defaults, options);
 	var registerComponents = ref.registerComponents;
-	var cropSettings = ref.cropSettings;
+	var defaultSettings = ref.defaultSettings;
 
 	if (registerComponents) {
 		// Vue.component(SkyCrop.name, SkyCrop);
-		Vue.component(SkyCrop.name, Object.assign({}, SkyCrop), {
-			computed: {
-				settings: function settings() {
-					return Object.assign({}, cropSettings, this.localSettings);
+		Vue.component(SkyCrop.name, Object.assign(
+			{},
+			SkyCrop,
+			{
+				computed: {
+					settings: function settings() {
+						return Object.assign({}, defaultSettings, this.localSettings);
+					},
 				},
 			}
-		});
+		));
 	}
 }
 
