@@ -76,6 +76,10 @@ var script = {
 			type: Number,
 			default: 100,
 		},
+		dpr: {
+			type: [String, Number],
+			default: 'default',
+		},
 		alt: String,
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
@@ -251,7 +255,10 @@ var script = {
 			return !!webpBrowsers.find(function (browser) { return (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1); });
 		},
 		crop: function crop(source, target, mode, rounding) {
-			var dpr = window.devicePixelRatio;
+			var dpr = this.dpr === 'default'
+				? window.devicePixelRatio
+				: this.dpr;
+
 			var cacheRound = function (value) { return Math.ceil((value * dpr) / rounding) * rounding; };
 
 			var cropMap = {

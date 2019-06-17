@@ -22,6 +22,10 @@ export default {
 			type: Number,
 			default: 100,
 		},
+		dpr: {
+			type: [String, Number],
+			default: 'default',
+		},
 		alt: String,
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
@@ -191,7 +195,10 @@ export default {
 			return !!webpBrowsers.find(browser => (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1));
 		},
 		crop(source, target, mode, rounding) {
-			const dpr = window.devicePixelRatio;
+			const dpr = this.dpr === 'default'
+				? window.devicePixelRatio
+				: this.dpr;
+
 			const cacheRound = value => Math.ceil((value * dpr) / rounding) * rounding;
 
 			const cropMap = {
