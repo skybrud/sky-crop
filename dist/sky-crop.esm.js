@@ -77,8 +77,9 @@ var script = {
 			default: 100,
 		},
 		dpr: {
-			type: [String, Number],
-			default: 'default',
+			type: Number,
+			default: 0,
+			validator: function (value) { return value >= 0; },
 		},
 		alt: String,
 		options: {
@@ -102,12 +103,12 @@ var script = {
 		rootClasses: function rootClasses() {
 			return [
 				'sky-crop',
-				("sky-crop--" + (this.mode)) ];
+				("sky-crop--" + (this.settings.mode)) ];
 		},
 		imageClasses: function imageClasses() {
 			return [
 				'sky-crop__image',
-				("sky-crop__image--" + (this.mode)) ];
+				("sky-crop__image--" + (this.settings.mode)) ];
 		},
 		imageAlterations: function imageAlterations() {
 			var this$1 = this;
@@ -149,8 +150,8 @@ var script = {
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
-					this.mode,
-					this.round
+					this.settings.mode,
+					this.settings.round
 				));
 			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
@@ -255,9 +256,7 @@ var script = {
 			return !!webpBrowsers.find(function (browser) { return (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1); });
 		},
 		crop: function crop(source, target, mode, rounding) {
-			var dpr = this.dpr === 'default'
-				? window.devicePixelRatio
-				: this.dpr;
+			var dpr = this.settings.dpr || window.devicePixelRatio;
 
 			var cacheRound = function (value) { return Math.ceil((value * dpr) / rounding) * rounding; };
 
@@ -384,6 +383,11 @@ var __vue_staticRenderFns__ = [];
 
 var defaults = {
 	registerComponents: true,
+	cropSettings: {
+		dpr: 0,
+		mode: 'width',
+		round: 100,
+	},
 };
 
 function install(Vue, options) {
@@ -393,9 +397,21 @@ function install(Vue, options) {
 
 	var ref = Object.assign({}, defaults, options);
 	var registerComponents = ref.registerComponents;
+	var cropSettings = ref.cropSettings;
 
 	if (registerComponents) {
-		Vue.component(SkyCrop.name, SkyCrop);
+		// Vue.component(SkyCrop.name, SkyCrop);
+		Vue.component(SkyCrop.name, Object.assign({}, SkyCrop), {
+			computed: {
+				settings: function settings() {
+					return Object.assign.apply({}, cropSettings, {
+						dpr: this.dpr,
+						mode: this.mode,
+						round: this.round,
+					})
+				},
+			}
+		});
 	}
 }
 

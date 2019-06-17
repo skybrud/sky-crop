@@ -2,6 +2,11 @@ import SkyCrop from './SkyCrop.vue';
 
 const defaults = {
 	registerComponents: true,
+	cropSettings: {
+		dpr: 0,
+		mode: 'width',
+		round: 100,
+	},
 };
 
 export { SkyCrop };
@@ -11,9 +16,20 @@ export default function install(Vue, options) {
 		return;
 	}
 
-	const { registerComponents } = Object.assign({}, defaults, options);
+	const { registerComponents, cropSettings } = Object.assign({}, defaults, options);
 
 	if (registerComponents) {
-		Vue.component(SkyCrop.name, SkyCrop);
+		// Vue.component(SkyCrop.name, SkyCrop);
+		Vue.component(SkyCrop.name, Object.assign({}, SkyCrop), {
+			computed: {
+				settings() {
+					return Object.assign.apply({}, cropSettings, {
+						dpr: this.dpr,
+						mode: this.mode,
+						round: this.round,
+					})
+				},
+			}
+		});
 	}
 };
