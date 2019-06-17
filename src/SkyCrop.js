@@ -14,17 +14,10 @@ export default {
 			type: String,
 			required: true,
 		},
-		mode: {
-			type: String,
-			default: 'width',
-		},
-		round: {
-			type: Number,
-			default: 100,
-		},
+		mode: String,
+		round: Number,
 		dpr: {
 			type: Number,
-			default: 0,
 			validator: value => value >= 0,
 		},
 		alt: String,
