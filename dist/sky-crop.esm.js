@@ -68,10 +68,17 @@ var script = {
 			type: String,
 			required: true,
 		},
-		mode: String,
-		round: Number,
+		mode: {
+			type: String,
+			default: 'width',
+		},
+		round: {
+			type: Number,
+			default: 100,
+		},
 		dpr: {
 			type: Number,
+			default: 0,
 			validator: function (value) { return value >= 0; },
 		},
 		alt: String,
@@ -96,12 +103,12 @@ var script = {
 		rootClasses: function rootClasses() {
 			return [
 				'sky-crop',
-				("sky-crop--" + (this.settings.mode)) ];
+				("sky-crop--" + (this.mode)) ];
 		},
 		imageClasses: function imageClasses() {
 			return [
 				'sky-crop__image',
-				("sky-crop__image--" + (this.settings.mode)) ];
+				("sky-crop__image--" + (this.mode)) ];
 		},
 		imageAlterations: function imageAlterations() {
 			var this$1 = this;
@@ -115,26 +122,6 @@ var script = {
 
 				return acc;
 			}, []);
-		},
-		localSettings: function localSettings() {
-			var object = {};
-
-			if (this.dpr) {
-				object.dpr = this.dpr;
-			}
-
-			if (this.mode) {
-				object.mode = this.mode;
-			}
-
-			if (this.round) {
-				object.round = this.round;
-			}
-
-			return object;
-		},
-		settings: function settings() {
-			return Object.assign({}, this.localSettings);
 		},
 	},
 	watch: {
@@ -163,8 +150,8 @@ var script = {
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
-					this.settings.mode,
-					this.settings.round
+					this.mode,
+					this.round
 				));
 			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
@@ -269,7 +256,7 @@ var script = {
 			return !!webpBrowsers.find(function (browser) { return (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1); });
 		},
 		crop: function crop(source, target, mode, rounding) {
-			var dpr = this.settings.dpr || window.devicePixelRatio;
+			var dpr = this.dpr || window.devicePixelRatio;
 
 			var cacheRound = function (value) { return Math.ceil((value * dpr) / rounding) * rounding; };
 
@@ -396,11 +383,6 @@ var __vue_staticRenderFns__ = [];
 
 var defaults = {
 	registerComponents: true,
-	defaultSettings: {
-		dpr: 0,
-		mode: 'width',
-		round: 100,
-	},
 };
 
 function install(Vue, options) {
@@ -410,21 +392,9 @@ function install(Vue, options) {
 
 	var ref = Object.assign({}, defaults, options);
 	var registerComponents = ref.registerComponents;
-	var defaultSettings = ref.defaultSettings;
 
 	if (registerComponents) {
-		// Vue.component(SkyCrop.name, SkyCrop);
-		Vue.component(SkyCrop.name, Object.assign(
-			{},
-			SkyCrop,
-			{
-				computed: {
-					settings: function settings() {
-						return Object.assign({}, defaultSettings, this.localSettings);
-					},
-				},
-			}
-		));
+		Vue.component(SkyCrop.name, SkyCrop);
 	}
 }
 

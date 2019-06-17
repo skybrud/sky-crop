@@ -14,10 +14,17 @@ export default {
 			type: String,
 			required: true,
 		},
-		mode: String,
-		round: Number,
+		mode: {
+			type: String,
+			default: 'width',
+		},
+		round: {
+			type: Number,
+			default: 100,
+		},
 		dpr: {
 			type: Number,
+			default: 0,
 			validator: value => value >= 0,
 		},
 		alt: String,
@@ -42,13 +49,13 @@ export default {
 		rootClasses() {
 			return [
 				'sky-crop',
-				`sky-crop--${this.settings.mode}`,
+				`sky-crop--${this.mode}`,
 			];
 		},
 		imageClasses() {
 			return [
 				'sky-crop__image',
-				`sky-crop__image--${this.settings.mode}`,
+				`sky-crop__image--${this.mode}`,
 			];
 		},
 		imageAlterations() {
@@ -61,26 +68,6 @@ export default {
 
 				return acc;
 			}, []);
-		},
-		localSettings() {
-			const object = {};
-
-			if (this.dpr) {
-				object.dpr = this.dpr;
-			}
-
-			if (this.mode) {
-				object.mode = this.mode;
-			}
-
-			if (this.round) {
-				object.round = this.round;
-			}
-
-			return object;
-		},
-		settings() {
-			return Object.assign({}, this.localSettings);
 		},
 	},
 	watch: {
@@ -106,8 +93,8 @@ export default {
 				this.cropArray.push(this.umbraco(
 					this.src,
 					container,
-					this.settings.mode,
-					this.settings.round
+					this.mode,
+					this.round
 				));
 			} else if (count === 5) {
 				console.info('[SkyCrop]: Container element does not have any dimensions, src:', this.src);
@@ -209,7 +196,7 @@ export default {
 			return !!webpBrowsers.find(browser => (userAgent.indexOf(browser) > -1) && (userAgent.indexOf('Edge') === -1));
 		},
 		crop(source, target, mode, rounding) {
-			const dpr = this.settings.dpr || window.devicePixelRatio;
+			const dpr = this.dpr || window.devicePixelRatio;
 
 			const cacheRound = value => Math.ceil((value * dpr) / rounding) * rounding;
 
