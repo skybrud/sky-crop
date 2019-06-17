@@ -122,12 +122,25 @@ var script = {
 				return acc;
 			}, []);
 		},
+		localSettings: function localSettings() {
+			var object = {};
+
+			if (this.dpr) {
+				object.dpr = this.dpr;
+			}
+
+			if (this.mode) {
+				object.mode = this.mode;
+			}
+
+			if (this.round) {
+				object.round = this.round;
+			}
+
+			return object;
+		},
 		settings: function settings() {
-			return {
-				dpr: this.dpr,
-				mode: this.mode,
-				round: this.round,
-			};
+			return Object.assign({}, this.localSettings);
 		},
 	},
 	watch: {
@@ -410,6 +423,7 @@ function install(Vue, options) {
 		Vue.component(SkyCrop.name, Object.assign({}, SkyCrop), {
 			computed: {
 				settings: function settings() {
+					console.log(this.dpr);
 					return Object.assign({}, {
 						dpr: this.dpr || cropSettings.dpr,
 						mode: this.mode || cropSettings.mode,

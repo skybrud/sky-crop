@@ -62,12 +62,25 @@ export default {
 				return acc;
 			}, []);
 		},
+		localSettings() {
+			const object = {};
+
+			if (this.dpr) {
+				object.dpr = this.dpr;
+			}
+
+			if (this.mode) {
+				object.mode = this.mode;
+			}
+
+			if (this.round) {
+				object.round = this.round;
+			}
+
+			return object;
+		},
 		settings() {
-			return {
-				dpr: this.dpr,
-				mode: this.mode,
-				round: this.round,
-			};
+			return Object.assign({}, this.localSettings);
 		},
 	},
 	watch: {
