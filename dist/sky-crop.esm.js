@@ -81,7 +81,10 @@ var script = {
 			default: 0,
 			validator: function (value) { return value >= 0; },
 		},
-		alt: String,
+		alt: {
+			type: String,
+			default: '',
+		},
 		options: {
 			// All available methods: http://imageprocessor.org/imageprocessor-web/imageprocessingmodule/
 			type: Object,
