@@ -126,6 +126,9 @@ var script = {
 				return acc;
 			}, []);
 		},
+		alttext: function alttext() {
+			return this.alt || '';
+		},
 	},
 	watch: {
 		loading: function loading() {
@@ -333,7 +336,7 @@ var script = {
 /* script */
             var __vue_script__ = script;
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},_vm._l((_vm.cropArray),function(url,index){return _c('img',{key:index,ref:"image",refInFor:true,class:_vm.imageClasses,attrs:{"src":url,"alt":_vm.alt},on:{"load":_vm.loaded}})}))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.rootClasses},_vm._l((_vm.cropArray),function(url,index){return _c('img',{key:index,ref:"image",refInFor:true,class:_vm.imageClasses,attrs:{"src":url,"alt":_vm.alttext},on:{"load":_vm.loaded}})}))};
 var __vue_staticRenderFns__ = [];
 
   /* style */

@@ -72,6 +72,9 @@ export default {
 				return acc;
 			}, []);
 		},
+		alttext() {
+			return this.alt || '';
+		},
 	},
 	watch: {
 		loading() {

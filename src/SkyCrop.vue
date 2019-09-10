@@ -6,7 +6,7 @@
 			:key="index"
 			:class="imageClasses"
 			:src="url"
-			:alt="alt"
+			:alt="alttext"
 			@load="loaded"
 		/>
 	</div>
