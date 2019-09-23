@@ -6,7 +6,7 @@
 	"module": "./dist/sky-crop.esm.js",
 	"browser": "./dist/sky-crop.esm.js",
 	"scripts": {
-		"dist": "yarn rimraf dist && yarn run build",
+		"dist": "yarn install && yarn rimraf dist && yarn run build",
 		"build": "yarn rollup --config rollup.config.js --environment BUILD:production"
 	},
 	"author": "Skybrud.dk",
