@@ -1,10 +1,6 @@
 import objectFitImages from 'object-fit-images';
 import resize from './helpers/resize';
 
-const defaultOptions = {
-	upscale: false,
-};
-
 const optionsBlacklist = 'anchor,center,format,mode,rnd';
 
 export default {
@@ -43,7 +39,6 @@ export default {
 			upperLimit: {},
 			loading: false,
 			config: Object.assign({},
-				defaultOptions,
 				this.options,
 			),
 		};
