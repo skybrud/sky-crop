@@ -61,10 +61,6 @@ var resize = {
 	off: off,
 };
 
-var defaultOptions = {
-	upscale: false,
-};
-
 var optionsBlacklist = 'anchor,center,format,mode,rnd';
 
 var script = {
@@ -103,7 +99,6 @@ var script = {
 			upperLimit: {},
 			loading: false,
 			config: Object.assign({},
-				defaultOptions,
 				this.options
 			),
 		};
@@ -350,7 +345,7 @@ var __vue_staticRenderFns__ = [];
   /* scoped */
   var __vue_scope_id__ = undefined;
   /* module identifier */
-  var __vue_module_identifier__ = "data-v-e8fc3ca2";
+  var __vue_module_identifier__ = "data-v-e18b5588";
   /* functional template */
   var __vue_is_functional_template__ = false;
   /* component normalizer */

@@ -55,10 +55,6 @@ var resize = {
 	off: off,
 };
 
-var defaultOptions = {
-	upscale: false,
-};
-
 var optionsBlacklist = 'anchor,center,format,mode,rnd';
 
 var script = {
@@ -97,7 +93,6 @@ var script = {
 			upperLimit: {},
 			loading: false,
 			config: Object.assign({},
-				defaultOptions,
 				this.options
 			),
 		};
